@@ -1,0 +1,19 @@
+{
+  "name": "disgames",
+  "version": "3.0.0",
+  "description": "Minigame bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MisterMiel/DisGames.git"
+  },
+  "author": "Mister_Miel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MisterMiel/DisGames/issues"
+  },
+  "homepage": "https://github.com/MisterMiel/DisGames#readme"
+}
