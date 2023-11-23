@@ -1,1 +1,22 @@
-//function on sql query
+const mysql = require('mysql');
+const config = require('../../config.json');
+
+module.exports.createConnection = async () => {
+    console.log("Trying to connect to database");
+    return new Promise((resolve, reject) => {
+
+        var connection = mysql.createConnection({
+            host: config["Keys"]["Database"]["Host"],
+            user: config["Keys"]["Database"]["User"],
+            password: config["Keys"]["Database"]["Password"],
+            database: config["Keys"]["Database"]["Database"]
+        })
+
+        connection.connect(err => {
+            if (err) throw err;
+        })
+        console.log("Connected to database");
+        resolve(connection);
+    })
+
+};
