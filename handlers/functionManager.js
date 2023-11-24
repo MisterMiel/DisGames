@@ -7,7 +7,6 @@ fs.readdirSync('./functions/').forEach(dir => {
         if (err) throw err;
         files.forEach(file => {
             const func = require(`../functions/${dir}/${file}`);
-            console.log()
             Object.assign(functions.prototype, func);
         });
     });
