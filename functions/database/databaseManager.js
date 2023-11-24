@@ -1,8 +1,8 @@
 const mysql = require('mysql');
 const config = require('../../config.json');
 
-module.exports.createConnection = async () => {
-    console.log("Trying to connect to database");
+module.exports.createConnection = async (functions) => {
+    functions.createLog("Trying to connect to database", false, true);
     return new Promise((resolve, reject) => {
 
         var connection = mysql.createConnection({
@@ -15,18 +15,18 @@ module.exports.createConnection = async () => {
         connection.connect(err => {
             if (err) throw err;
         })
-        console.log("Connected to database");
+        functions.createLog("Connected to database", false, false);
         resolve(connection);
     })
 
 };
 
-module.exports.runQuery = async (connection, query) => {
-    console.log("Trying to run a query");
+module.exports.runQuery = async (functions, connection, query) => {
+    functions.createLog("Trying to run a query", false, true);
     return new Promise((resolve, reject) => {
         connection.query(query, (err, result) => {
             if (err) throw err;
-            console.log("Query runned")
+            functions.createLog("Query runned", false, true);
             resolve(result);
         })
     })

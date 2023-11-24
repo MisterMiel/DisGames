@@ -1,7 +1,8 @@
 module.exports.run = async (client, functions, connection, raw) => {
-    functions.createLog("test", false, false);
-    const data = await functions.runQuery(connection, 'SELECT * FROM users')
-    console.log(data)
+    functions.createLog("Running Message Create event", false, false);
+    const message = await functions.getLanguageMessage(client, functions, connection, 1, "ESP");
+    console.log(raw)
+    //raw.d.message.reply(message);
 };
 
 module.exports.help = {
