@@ -20,3 +20,15 @@ module.exports.createConnection = async () => {
     })
 
 };
+
+module.exports.runQuery = async (connection, query) => {
+    console.log("Trying to run a query");
+    return new Promise((resolve, reject) => {
+        connection.query(query, (err, result) => {
+            if (err) throw err;
+            console.log("Query runned")
+            resolve(result);
+        })
+    })
+
+};

@@ -20,7 +20,8 @@ client.on('ready', async () => {
     connection = await functions.createConnection();
 
     const events = await getEvents(client);
-    //Connect to Database
+
+    
     //Get all languages
     //Create commands
     //Create events

@@ -1,4 +1,5 @@
 const fs = require('fs');
+
 async function getEvents(client) {
     fs.readdir(`./actions/events/`, (err, files) => {
         if (err) throw err;
