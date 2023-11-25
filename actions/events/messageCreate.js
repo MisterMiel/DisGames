@@ -1,10 +1,10 @@
-module.exports.run = async (client, functions, connection, raw) => {
+module.exports.run = async (client, functions, connection, message) => {
     functions.createLog("Running Message Create event", false, false);
-    const message = await functions.getLanguageMessage(client, functions, connection, 1, "ESP");
-    console.log(raw)
-    //raw.d.message.reply(message);
+    const message2 = await functions.getLanguageMessage(client, functions, connection, 1, "ESP");
+    console.log(message)
+    message.reply(message2);
 };
 
 module.exports.help = {
-    event: "MESSAGE_CREATE"
+    event: "messageCreate"
 }
