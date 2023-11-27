@@ -34,12 +34,12 @@ client.on('ready', async () => {
 
 });
 
-client.on('messageCreate', async (message) => {
-    if (message.author.bot) return;
-    const event = client.events.get('messageCreate');
-    if (!event) return;
-    event.run(client, functions, connection, message);
-});
+// client.on('messageCreate', async (message) => {
+//     if (message.author.bot) return;
+//     const event = client.events.get('messageCreate');
+//     if (!event) return;
+//     event.run(client, functions, connection, message);
+// });
 
 
 client.login(config['Keys']['Token']);
