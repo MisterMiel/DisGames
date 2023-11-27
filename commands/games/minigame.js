@@ -7,8 +7,6 @@ module.exports = {
         permissions: [],
     },
     run: function (client, functions, connection, message) {
-        //return async function (message) {
-            message.reply("This is a minigame");
-        //}
+        message.reply("This is a minigame");
     }
 }

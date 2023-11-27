@@ -31,8 +31,6 @@ client.on('ready', async () => {
 
     const slashCommands = await createSlashCommands(client, functions);
 
-    //Create commands
-    //Create events
 
 });
 
