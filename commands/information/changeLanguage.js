@@ -6,24 +6,34 @@ module.exports = {
             {
                 name: "language",
                 description: "The language you want to change to",
-                type: "STRING",
+                type: 3,
                 required: true,
                 choices: [
                     {
                         name: "English",
-                        value: 1
+                        value: "EN"
                     },
                     {
                         name: "Dutch",
-                        value: 2
+                        value: "NL"
+                    },
+                    {
+                        name: "Spanish",
+                        value: "ES"
+                    },
+                    {
+                        name: "German",
+                        value: "GE"
                     }
                 ]
             }
         ],
         description: "A minigame",
-        permissions: [],
+        permissions: 0,
     },
-    run: function (client, functions, connection, message) {
-        message.reply("This is a minigame");
+    run: async function (client, functions, connection, message) {
+        const language = message.options.getString("language");
+        const response = await functions.getLanguageMessage(client, functions, connection, 3, language);
+        message.reply(response);
     }
 }
