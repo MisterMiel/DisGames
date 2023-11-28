@@ -49,8 +49,6 @@ module.exports = {
     },
     run: async function (client, functions, connection, message) {
 
-        //kijken of kanaal al bestaat
-        //kijken of er al een game is
         const result = await functions.runQuery(functions, connection, `SELECT * FROM games WHERE channelID = '${message.channel.id}'`, true);
         if (result.length > 0) {
             return message.reply("There is already a game in this channel")

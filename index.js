@@ -25,21 +25,11 @@ client.on('ready', async () => {
     
     const languages = await functions.getLanguages(client, functions, connection);
 
-    const message = await functions.getLanguageMessage(client, functions, connection, 1, "ESP");
-    console.log(message);
 
 
     const slashCommands = await createSlashCommands(client, functions);
 
 
 });
-
-// client.on('messageCreate', async (message) => {
-//     if (message.author.bot) return;
-//     const event = client.events.get('messageCreate');
-//     if (!event) return;
-//     event.run(client, functions, connection, message);
-// });
-
 
 client.login(config['Keys']['Token']);
