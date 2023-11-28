@@ -21,12 +21,17 @@ module.exports.createConnection = async (functions) => {
 
 };
 
-module.exports.runQuery = async (functions, connection, query) => {
+module.exports.runQuery = async (functions, connection, query, consoleLog) => {
     functions.createLog("Trying to run a query", false, true);
     return new Promise((resolve, reject) => {
         connection.query(query, (err, result) => {
             if (err) throw err;
             functions.createLog("Query runned", false, true);
+            if (consoleLog) {
+                functions.createLog("Query Output", true, false)
+                console.log(result)
+            };
+
             resolve(result);
         })
     })
