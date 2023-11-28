@@ -1,21 +1,26 @@
 const fs = require('fs');
+const path = require('path');
 
-async function getEvents(client) {
-    fs.readdir(`./actions/events/`, (err, files) => {
+async function getEvents(client, functions, connection) {
+    const eventsFolderPath = path.join(__dirname, '../actions/events');
+
+    fs.readdir(eventsFolderPath, (err, files) => {
         if (err) throw err;
-        var jsFiles = files.filter(f => f.split(".").pop() === "js");
+
+        const jsFiles = files.filter(f => f.split(".").pop() === "js");
+
         if (jsFiles.length <= 0) return console.log(`(ERROR) No events Found!`);
 
         jsFiles.forEach(file => {
-            var fileGet = require(`${process.cwd()}/actions/events/${file}`);
+            const event = require(path.join(eventsFolderPath, file));
+            if(event.data === undefined) return;
             try {
-                client.events.set(fileGet.help.event, fileGet);
-                //console.log(`(SUCCESS) Loaded Event: ${fileGet.help.event}`);
+                client[event.data.type](event.data.name, event.run(client, functions, connection));
             } catch (err) {
-                return console.log(err);
+                console.log(err);
             }
         });
     });
-};
+}
 
-module.exports = { getEvents }
+module.exports = { getEvents };

@@ -1,15 +1,15 @@
 const { Client, Intents, Collection, MessageEmbed, MessageButton, MessageActionRow, Permissions } = require('discord.js');
 
 
-const client = new Client({ intents: 33280 });
+const client = new Client({ intents: 34305 });
 const config = require('./config.json');
-client.events = new Collection();
 
-
+client.commands = new Collection();
 
 const functions = require('./handlers/functionManager.js');
 const { getEvents } = require('./handlers/eventHandler.js');
-
+const { getCommands } = require('./handlers/commandHandler.js');
+const { createSlashCommands } = require('./handlers/slashCommandHandler.js');
 let connection = null;
 
 client.on('ready', async () => {
@@ -19,30 +19,27 @@ client.on('ready', async () => {
 
     connection = await functions.createConnection(functions);
 
-    const events = await getEvents(client);
+    const commands = await getCommands(client, functions);
 
-
+    const events = await getEvents(client, functions, connection);
+    
     const languages = await functions.getLanguages(client, functions, connection);
 
     const message = await functions.getLanguageMessage(client, functions, connection, 1, "ESP");
     console.log(message);
-    //Get all languages
-    //Create commands
-    //Create events
+
+
+    const slashCommands = await createSlashCommands(client, functions);
+
 
 });
 
-client.on('raw', (raw) => {
-    const event = client.events.get(raw.t);
-    if (!event) return;
-    event.run(client, functions, connection, raw);
-});
-
-client.on('messageCreate', (message) => {
-    console.log(message);
-});
-
-
+// client.on('messageCreate', async (message) => {
+//     if (message.author.bot) return;
+//     const event = client.events.get('messageCreate');
+//     if (!event) return;
+//     event.run(client, functions, connection, message);
+// });
 
 
 client.login(config['Keys']['Token']);

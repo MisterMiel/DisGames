@@ -1,7 +1,11 @@
-module.exports.run = async (client, functions, connection, raw) => {
-    functions.createLog("test", false, false);
-};
+module.exports = {
+    data: {
+        name: 'knop'
+},
+    run: function (client, functions, connection) {
+        return async function (button) {
+            
 
-module.exports.help = {
-    buttonName: "Kwaliteit"
+        }
+    }
 }
