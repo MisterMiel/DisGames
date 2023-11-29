@@ -14,6 +14,12 @@ module.exports = {
                 if(channel.type === 1) {
                     functions.runGame1(functions, connection, message, channel);
                 }
+                if(channel.type === 2) {
+                    functions.runGame2(functions, connection, message, channel);
+                }
+                if(channel.type === 3) {
+                    functions.runGame3(functions, connection, message, channel);
+                }
             }
 
         }
