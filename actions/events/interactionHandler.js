@@ -11,7 +11,7 @@ module.exports = {
             try {
                 await command.run(client, functions, connection, message);
             } catch (error) {
-                functions.createLog(error, true, false);
+                functions.createLog(`${command.data.name} (SLASH) | ${error}`, true, false);
                 await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
 

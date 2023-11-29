@@ -4,7 +4,7 @@ module.exports.getGameRules = async (client, functions, connection, gameID) => {
 }
 
 module.exports.getSuccessor = async (client, functions, connection, gameID) => {
-    if(gameID === 1) {
+    if (gameID === 1) {
 
 
 
@@ -15,45 +15,65 @@ module.exports.getSuccessor = async (client, functions, connection, gameID) => {
 
 //1 = Count
 module.exports.runGame1 = async (functions, connection, message, result) => {
-    if(parseInt(result.response) == parseInt(message.content)) {
+    if (result == undefined) {
         message.reply('Correct!');
-        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = `response` + 1 WHERE `channelID` = '"+message.channel.id+"'");
+        const game = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + 1 + "', '" + 1 + "')");
+        return
+    }
+    if (parseInt(result.response) == parseInt(message.content)) {
+        functions.reactMessage(functions, message, "✅");
+        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = `response` + 1 WHERE `channelID` = '" + message.channel.id + "'");
         return;
     }
 
 }
 
 //2 = Snake
-module.exports.runGame2 = async (client, functions, connection) => {
+module.exports.runGame2 = async (functions, connection) => {
     console.log('This is a test2')
 }
 
 //3 = Anagram
-module.exports.runGame3 = async (client, functions, connection) => {
-    console.log('This is a test3')
+module.exports.runGame3 = async (functions, connection, message, result) => {
+    const anagramWord = await functions.getAnagram(functions, connection, 'EN');
+    const anagram = await functions.createAnagram(functions, connection, anagramWord.response);
+    if (result == undefined) {
+        const embed = await functions.createEmbed(functions, 'Anagram:', anagram, anagramWord.picture);
+        message.reply({ embeds: [embed], ephemeral: true })
+        message.channel.send({embeds: [embed]})
+        const game = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + 3 + "', '" + anagramWord.response + "')");
+        return
+    }
+    if (result.response.toLowerCase() === message.content.toLowerCase()) {
+        functions.reactMessage(functions, message, "✅");
+        const embed = await functions.createEmbed(functions, 'Anagram:', anagram, anagramWord.picture);
+        message.reply({ embeds: [embed] })
+        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + anagramWord.response + "' WHERE `channelID` = '" + message.channel.id + "'");
+        return;
+    }
 }
 
 //4 = Arrow Guesser
-module.exports.runGame4 = async (client, functions, connection) => {
+module.exports.runGame4 = async (functions, connection) => {
     console.log('This is a test4')
 }
 
 //5 = Age Guesser
-module.exports.runGame5 = async (client, functions, connection) => {
+module.exports.runGame5 = async (functions, connection) => {
     console.log('This is a test5')
 }
 
 //6 = Price Guesser
-module.exports.runGame6 = async (client, functions, connection) => {
+module.exports.runGame6 = async (functions, connection) => {
     console.log('This is a test6')
 }
 
 //7 = Math Challenge
-module.exports.runGame7 = async (client, functions, connection) => {
+module.exports.runGame7 = async (functions, connection) => {
     console.log('This is a test7')
 }
 
 //8 = Guess the Flag
-module.exports.runGame8 = async (client, functions, connection) => {
+module.exports.runGame8 = async (functions, connection) => {
     console.log('This is a test8')
 }

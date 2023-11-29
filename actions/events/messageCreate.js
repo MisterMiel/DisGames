@@ -18,8 +18,8 @@ module.exports = {
             try {
                 await command.run(client, functions, connection, message);
             } catch (error) {
-                functions.createLog(error, true, false);
-                await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+                functions.createLog(`${command.data.name} (MESSAGE) | ${error}`, true, false);
+                await message.reply({ content: 'There was an error while executing this command! Please try to use /' + command.data.name, ephemeral: true });
             }
         }
     }
