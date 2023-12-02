@@ -20,6 +20,21 @@ module.exports = {
                 if(channel.type === 3) {
                     functions.runGame3(functions, connection, message, channel);
                 }
+                if(channel.type === 4) {
+                    functions.runGame4(functions, connection, message, channel);
+                }
+                if(channel.type === 5) {
+                    functions.runGame5(functions, connection, message, channel);
+                }
+                if(channel.type === 6) {
+                    functions.runGame6(functions, connection, message, channel);
+                }
+                if(channel.type === 7) {
+                    functions.runGame7(functions, connection, message, channel);
+                }
+                if(channel.type === 8) {
+                    functions.runGame8(functions, connection, message, channel);
+                }
             }
 
         }
