@@ -35,7 +35,8 @@ module.exports.runGame2 = async (functions, connection) => {
 
 //3 = Anagram
 module.exports.runGame3 = async (functions, connection, message, result) => {
-    const anagramWord = await functions.getAnagram(functions, connection, 'EN');
+    const language = await functions.getServerLanguage(functions, connection, message.guild.id)
+    const anagramWord = await functions.getAnagram(functions, connection, language);
     const anagram = await functions.createAnagram(functions, connection, anagramWord.response);
     const embed = await functions.createEmbed(functions, 'Anagram:', anagram, anagramWord.picture);
     if (result == undefined) {

@@ -8,16 +8,41 @@ module.exports.getLanguages = async (client, functions, connection) => {
     return true;
 };
 
-module.exports.getLanguageMessage = async (client, functions, connection, id, language) => {
+module.exports.getLanguageMessage = async (client, functions, connection, id, language, placeholders = {}) => {
     if (languages.length === 0) {
         await this.getLanguages(client, functions, connection);
     } 
     
-    for(let i = 0; i < languages.length; i++) {
-       if(languages[i].ID === id) {
-            return languages[i][language];
+    for (let i = 0; i < languages.length; i++) {
+       if (languages[i].ID === id) {
+            let message = languages[i][language] || 'No message set for this language.';
+            Object.entries(placeholders).forEach(([placeholder, value]) => {
+                const regex = new RegExp(`\\[\\^${placeholder}\\]`, 'g');
+                message = message.replace(regex, value);
+            });
+
+            return message;
        }
     }
 
     return 'No message set for this language.';
-}
+};
+
+module.exports.convertLanguage = async (language, reverse = false) => {
+    const languageMapping = {
+        1: 'EN',
+        2: 'NL',
+        3: 'ES',
+        4: 'DE'
+    };
+
+    const reverseMapping = Object.fromEntries(
+        Object.entries(languageMapping).map(([key, value]) => [value, parseInt(key)])
+    );
+
+    if (reverse) {
+        return reverseMapping[language] || 1; 
+    } else {
+        return languageMapping[language] || 'EN'; 
+    }
+};

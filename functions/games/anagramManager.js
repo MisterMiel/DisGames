@@ -1,5 +1,5 @@
 module.exports.getAnagram = async (functions, connection, language) => {
-    const result = await functions.runQuery(functions, connection, `SELECT * FROM game_data WHERE languageID = '${language}' AND gameID = '3' ORDER BY RAND() LIMIT 1`, true);
+    const result = await functions.runQuery(functions, connection, `SELECT * FROM game_data WHERE languageID = '${language}' AND gameID = '3' ORDER BY RAND() LIMIT 1`);
     return result[0];
 }
 
