@@ -13,83 +13,28 @@ module.exports.getSuccessor = async (client, functions, connection, gameID) => {
     return 'No message set for this language.';
 }
 
-//1 = Count
-module.exports.runGame1 = async (functions, connection, message, result) => {
-    if (result == undefined) {
-        message.reply('Correct!');
-        const game = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + 1 + "', '" + 1 + "')");
-        return
-    }
-    if (parseInt(result.response) == parseInt(message.content)) {
-        functions.reactMessage(functions, message, "✅");
-        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = `response` + 1 WHERE `channelID` = '" + message.channel.id + "'");
-        return;
-    }
-
-}
-
-//2 = Snake
-module.exports.runGame2 = async (functions, connection) => {
-    console.log('This is a test2')
-}
-
-//3 = Anagram
-module.exports.runGame3 = async (functions, connection, message, result) => {
+module.exports.runGame = async (functions, connection, type, message, result) => {
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
-    const anagramWord = await functions.getAnagram(functions, connection, language);
-    const anagram = await functions.createAnagram(functions, connection, anagramWord.response);
-    const embed = await functions.createEmbed(functions, 'Anagram:', anagram, anagramWord.picture);
-    if (result == undefined) {
-        message.reply({ embeds: [embed], ephemeral: true })
-        message.channel.send({embeds: [embed]})
-        const game = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + 3 + "', '" + anagramWord.response + "')");
-        return
+    const data = await functions.runQuery(functions, connection, `SELECT * FROM game_data LEFT JOIN game_types ON game_data.gameID = game_types.ID WHERE languageID = '${language}' AND gameID = '${type}' ORDER BY RAND() LIMIT 1`);
+    const game = data[0];
+
+    if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
+    if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length-1).toLowerCase(); }
+    if (type === 3) {
+        const anagram = await functions.createAnagram(functions, connection, game.response);
+        game.message = anagram;
     }
-    if (result.response.toLowerCase() === message.content.toLowerCase()) {
+
+    console.log(game)
+
+    const embed = await functions.createEmbed(functions, game.gameName, game.message, game.picture);
+    if (result === undefined) {
+        message.reply({ embeds: [embed] }, { ephemeral: true })
+        if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
+        const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')");
+    } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase())) {
         functions.reactMessage(functions, message, "✅");
-        message.reply({ embeds: [embed] })
-        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + anagramWord.response + "' WHERE `channelID` = '" + message.channel.id + "'");
-        return;
-    }
-}
-
-//4 = Arrow Guesser
-module.exports.runGame4 = async (functions, connection) => {
-    console.log('This is a test4')
-}
-
-//5 = Age Guesser
-module.exports.runGame5 = async (functions, connection) => {
-    console.log('This is a test5')
-}
-
-//6 = Price Guesser
-module.exports.runGame6 = async (functions, connection) => {
-    console.log('This is a test6')
-}
-
-//7 = Math Challenge
-module.exports.runGame7 = async (functions, connection) => {
-    console.log('This is a test7')
-}
-
-//8 = Guess the Flag
-module.exports.runGame8 = async (functions, connection, message, result) => {
-    const data = await functions.runQuery(functions, connection, `SELECT * FROM game_data WHERE languageID = 'EN' AND gameID = '8' ORDER BY RAND() LIMIT 1`);
-    const flag = data[0];
-    console.log(flag)
-    const embed = await functions.createEmbed(functions, 'Guess the flag:', flag.message, flag.picture);
-
-    if (result == undefined) {
-        message.reply({ embeds: [embed], ephemeral: true })
-        message.channel.send({embeds: [embed]})
-        const game = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + 8 + "', '" + flag.response + "')");
-        return
-    }
-    if (result.response.toLowerCase() === message.content.toLowerCase()) {
-        functions.reactMessage(functions, message, "✅");
-        message.reply({ embeds: [embed] })
-        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + flag.response + "' WHERE `channelID` = '" + message.channel.id + "'");
-        return;
+        if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
+        functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' WHERE `channelID` = '" + message.channel.id + "'");
     }
 }

@@ -54,31 +54,9 @@ module.exports = {
             return message.reply("There is already a game in this channel")
         } else {
             const type = parseInt(message.options.getString("mode"));
-            if(type == 1) {
-                const game = functions.runGame1(functions, connection, message);
-            }
-            if(type == 2) {
-                const game = functions.runGame2(functions, connection, message);
-            }
-            if(type == 3) {
-                const game = functions.runGame3(functions, connection, message);
-            }
-            if(type == 4) {
-                const game = functions.runGame4(functions, connection, message);
-            }
-            if(type == 5) {
-                const game = functions.runGame5(functions, connection, message);
-            }
-            if(type == 6) {
-                const game = functions.runGame6(functions, connection, message);
-            }
-            if(type == 7) {
-                const game = functions.runGame7(functions, connection, message);
-            }
-            if(type == 8) {
-                const game = functions.runGame8(functions, connection, message);
-            }
-            //message.reply("This is a minigame");
+
+            functions.runGame(functions, connection, type, message);
+
         }
 
 
