@@ -19,19 +19,25 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
     const game = data[0];
 
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
-    if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length-1).toLowerCase(); }
-    if (type === 3) {
-        const anagram = await functions.createAnagram(functions, connection, game.response);
-        game.message = anagram;
-    }
-
-    console.log(game)
+    if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
+    if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = anagram; }
 
     const embed = await functions.createEmbed(functions, game.gameName, game.message, game.picture);
     if (result === undefined) {
         message.reply({ embeds: [embed] }, { ephemeral: true })
         if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
         const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')");
+    } else if (type === 4) {
+        if (parseInt(message.content) > parseInt(result.response)) {
+            functions.reactMessage(functions, message, "🔽");
+        } else if (parseInt(message.content) < parseInt(result.response)) {
+            functions.reactMessage(functions, message, "🔼");
+        } else {
+            functions.reactMessage(functions, message, "✅");
+            game.response = Math.floor(Math.random() * 10000) + 1;
+            message.channel.send({ content: "correct" })
+            functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' WHERE `channelID` = '" + message.channel.id + "'");
+        }
     } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase())) {
         functions.reactMessage(functions, message, "✅");
         if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
