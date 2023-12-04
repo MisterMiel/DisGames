@@ -32,8 +32,18 @@ module.exports = {
         permissions: 0,
     },
     run: async function (client, functions, connection, message) {
+        const languageNames = {
+            'EN': 'English',
+            'NL': 'Dutch',
+            'ES': 'Spanish',
+            'GE': 'German'
+        };
         const language = message.options.getString("language");
-        const response = await functions.getLanguageMessage(client, functions, connection, 3, language);
+        const languageName = languageNames[language];
+    
+        const response = await functions.getLanguageMessage(client, functions, connection, 12, language, { LANGUAGE: languageName, GUILD: message.guild.name });
         message.reply(response);
+        const server = await functions.updateServerLanguage(functions, connection, message.guild.id, language);
+
     }
 }

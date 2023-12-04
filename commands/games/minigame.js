@@ -54,16 +54,9 @@ module.exports = {
             return message.reply("There is already a game in this channel")
         } else {
             const type = parseInt(message.options.getString("mode"));
-            if(type == 1) {
-                const game = functions.runGame1(functions, connection, message);
-            }
-            if(type == 2) {
-                const game = functions.runGame2(functions, connection, message);
-            }
-            if(type == 3) {
-                const game = functions.runGame3(functions, connection, message);
-            }
-            //message.reply("This is a minigame");
+
+            functions.runGame(functions, connection, type, message);
+
         }
 
 

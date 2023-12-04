@@ -29,6 +29,8 @@ client.on('ready', async () => {
 
     const slashCommands = await createSlashCommands(client, functions);
 
+    const servers = await functions.getAllServers(client, functions, connection);
+    //const myServer = await functions.getServer(client, functions, connection, '1061703062294626334');
 
 });
 

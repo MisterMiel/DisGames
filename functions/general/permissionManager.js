@@ -6,10 +6,5 @@ module.exports.checkPermission = async (functions, message, permission) => {
     const permsFor = message.channel.permissionsFor(message.guild.me);
     if (permsFor === null || permsFor === undefined) return false;
     if (!permsFor.has(permission)) return false;
-
-
-
-
-
     return true;
 };
