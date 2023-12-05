@@ -5,6 +5,7 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (message) {
+            if (!message.commandName) return;
             const command = client.commands.get(message.commandName);
             if (!command) return;
 
