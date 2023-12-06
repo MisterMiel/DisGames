@@ -30,8 +30,7 @@ client.on('ready', async () => {
     
     const languages = await functions.getLanguages(client, functions, connection);
 
-    const games = await functions.getGameRules(client, functions, connection);
-    console.log("1" + games)
+    const games = await functions.getAllGameRules(client, functions, connection);
     
     const slashCommands = await createSlashCommands(client, functions);
 

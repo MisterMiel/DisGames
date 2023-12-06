@@ -2,9 +2,8 @@ const { PermissionsBitField } = require('discord.js');
 
 const games = [];
 
-module.exports.getGameRules = async (client, functions, connection) => {
-    console.log("Fetching all games")
-    functions.createLog("Fetching all games", true, true);
+module.exports.getAllGameRules = async (client, functions, connection) => {
+    functions.createLog("Fetching all games", false, true);
     const data = await functions.runQuery(functions, connection, 'SELECT * FROM game_types');
     for (let i = 0; i < data.length; i++) {
         games.push(data[i]);
@@ -12,6 +11,7 @@ module.exports.getGameRules = async (client, functions, connection) => {
     return true;
 }
 
+module.exports.games = games;
 
 module.exports.runGame = async (functions, connection, type, message, result) => {
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
