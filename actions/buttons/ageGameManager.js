@@ -1,11 +1,10 @@
 module.exports = {
     data: {
-        name: 'knop'
-},
-    run: function (client, functions, connection) {
-        return async function (button) {
-            
+        name: 'nextpage'
+    },
+    run: function (client, functions, connection, button) {
+        button.reply({ content: 'next page', ephemeral: true });
+        console.log(button)
 
-        }
     }
 }

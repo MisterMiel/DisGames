@@ -14,6 +14,23 @@ module.exports.createEmbed = async (functions, title, description, image) => {
     return embed;
 }
 
+module.exports.createButton = async (functions, label, style, customID, link) => {
+    const actionRow = new addons.ActionRowBuilder().addComponents(
+        new addons.ButtonBuilder()
+            .setLabel("◀")
+            .setCustomId("PreviousPage")
+            .setStyle(1),
+        new addons.ButtonBuilder()
+            .setLabel("▶")
+            .setCustomId("NextPage")
+            .setStyle(1),
+        new addons.ButtonBuilder()
+            .setLabel("🏡")
+            .setCustomId("HomePage")
+            .setStyle(2)
+    );
+}
+
 module.exports.reactMessage = async (functions, message, reaction) => {
     functions.createLog("Reacting to message", false, true);
     const perms = functions.checkPermission(functions, message, PermissionsBitField.Flags.AddReactions);
