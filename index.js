@@ -21,6 +21,7 @@ client.on('ready', async () => {
 
     connection = await functions.createConnection(functions);
 
+
     const commands = await getCommands(client, functions);
 
     const buttons = await getButtons(client, functions);
@@ -29,8 +30,9 @@ client.on('ready', async () => {
     
     const languages = await functions.getLanguages(client, functions, connection);
 
-
-
+    const games = await functions.getGameRules(client, functions, connection);
+    console.log("1" + games)
+    
     const slashCommands = await createSlashCommands(client, functions);
 
     const servers = await functions.getAllServers(client, functions, connection);

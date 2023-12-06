@@ -1,7 +1,17 @@
 const { PermissionsBitField } = require('discord.js');
-module.exports.getGameRules = async (client, functions, connection, gameID) => {
-    return 'No message set for this language.';
+
+const games = [];
+
+module.exports.getGameRules = async (client, functions, connection) => {
+    console.log("Fetching all games")
+    functions.createLog("Fetching all games", true, true);
+    const data = await functions.runQuery(functions, connection, 'SELECT * FROM game_types');
+    for (let i = 0; i < data.length; i++) {
+        games.push(data[i]);
+    }
+    return true;
 }
+
 
 module.exports.runGame = async (functions, connection, type, message, result) => {
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)

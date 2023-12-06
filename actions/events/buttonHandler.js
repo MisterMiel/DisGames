@@ -5,10 +5,8 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (interaction) {
-            console.log(interaction.customId)
             if (!interaction.customId) return;
             const button = client.buttons.get(interaction.customId);
-            console.log(button)
             if (!button) return;
 
             try {
