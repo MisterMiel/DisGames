@@ -2,7 +2,7 @@ const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder
 module.exports = {
     data: {
         name: 'games',
-        message: true,
+        message: false,
         options: [],
         description: "A minigame",
         permissions: 0,

@@ -1,3 +1,17 @@
-module.exports.getGamePoints = async (client, functions, connection, gameID) => {
-    return 'No message set for this language.';
+module.exports.setGamePoints = async (functions, connection, gameID, userID, serverID) => {
+    functions.createLog("Updating game points", false, true);
+    const gameDetails = await functions.games;
+    const game = gameDetails[gameID - 1];
+    const points = game.pointPerGame;
+    console.log(points)
+    console.log(game)
+
+    const getUser = await functions.runQuery(functions, connection, `SELECT * FROM points WHERE userID = '${userID}' AND serverID = '${serverID}' AND gameID = '${gameID}'`, true);
+    if (getUser.length === 0) {
+        await functions.runQuery(functions, connection, `INSERT INTO points (userID, serverID, gameID, points) VALUES (${userID}, ${serverID}, ${gameID}, ${points})`);
+    } else {
+        await functions.runQuery(functions, connection, `UPDATE points SET points = points + ${points} WHERE userID = ${userID} AND serverID = ${serverID} AND gameID = ${gameID}`);
+    }
+
+    return true;
 }

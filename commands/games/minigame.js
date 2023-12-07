@@ -1,7 +1,7 @@
 module.exports = {
     data: {
         name: 'setupgame',
-        message: true,
+        message: false,
         options: [
             {
                 name: "mode",
