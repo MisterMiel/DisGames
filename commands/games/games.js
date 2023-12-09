@@ -8,47 +8,28 @@ module.exports = {
         permissions: 0,
     },
     run: async function (client, functions, connection, message) {
-        const options = [
-            new StringSelectMenuOptionBuilder()
-                .setLabel('🔢 Count')
-                .setDescription('Test')
-                .setValue('1'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('🐍 Snake')
-                .setDescription('Test')
-                .setValue('2'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('📋 Anagram')
-                .setDescription('Test')
-                .setValue('3'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('🔼 Arrow Guesser')
-                .setDescription('Test')
-                .setValue('4'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('👥 Age Guesser')
-                .setDescription('Test')
-                .setValue('5'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('💍 Price Guesser')
-                .setDescription('Test')
-                .setValue('6'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('📊 Math Challenge')
-                .setDescription('Test')
-                .setValue('7'),
-        
-            new StringSelectMenuOptionBuilder()
-                .setLabel('🚩 Guess the Flag')
-                .setDescription('Test')
-                .setValue('8'),
-        ];
+        const games = functions.games;
+
+        const transformedOptions = games.map(async (rowData)  => {
+            const emojiMap = {
+                'Count': '🔢',
+                'Snake': '🐍',
+                'Anagram': '📋',
+                'Arrow Guesser': '🔼',
+                'Age Guesser': '👥',
+                'Price Guesser': '💍',
+                'Math Challenge': '📊',
+                'Guess the Flag': '🚩',
+            };
+
+            const emoji = emojiMap[rowData.gameName] || '❓'; 
+            const description = await functions.getLanguageMessage(client, functions, connection, rowData.description, 'EN') || 'No description provided'; 
+            return new StringSelectMenuOptionBuilder()
+                .setLabel(`${emoji} ${rowData.gameName}`)
+                .setDescription(description)
+                .setValue(rowData.ID.toString());
+        });
+        const options = await Promise.all(transformedOptions);
         const dropdown = new StringSelectMenuBuilder()
             .setCustomId('gameInfoSelector')
             .setPlaceholder('Make a selection!')

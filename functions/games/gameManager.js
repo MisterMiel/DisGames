@@ -24,13 +24,19 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
 
     if (result === undefined) {
         const embed = await functions.createEmbed(functions, game.gameName, "Hier uitleg game", game.picture);
-
+        
         message.reply({ embeds: [embed] }, { ephemeral: true })
         if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
         const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')");
     } else {
         const embed = await functions.createEmbed(functions, game.gameName, game.message, game.picture);
-
+        
+        if(game.sameUserAllowed === 1 && message.content.toLowerCase() === "?") {
+            const footerMessage = functions.getLanguageMessage(null, functions, connection, 27, language)
+            embed.setFooter({ text: "You can use ? to skip the game" })
+            if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
+        
+        }
         if (result.lastUser === message.author.id && game.sameUserAllowed === 0) {
             functions.createLog("Deleting message from same user", false, true);
             //const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
