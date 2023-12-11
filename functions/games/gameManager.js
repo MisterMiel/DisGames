@@ -17,7 +17,6 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
     const data = await functions.runQuery(functions, connection, `SELECT * FROM game_data LEFT JOIN game_types ON game_data.gameID = game_types.ID WHERE languageID = '${language}' AND gameID = '${type}' ORDER BY RAND() LIMIT 1`);
     const game = data[0];
-
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
     if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
     if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = anagram; }

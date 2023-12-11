@@ -31,6 +31,11 @@ async function createSlashCommands(client, functions) {
                 { body: slashCommands },
             );
 
+            const secondData = await rest.put(
+                Routes.applicationGuildCommands(config["Keys"]["ClientID"], '797846882818457600'),
+                { body: slashCommands },
+            )
+
             functions.createLog(`Successfully reloaded ${slashCommands.length} application (/) commands.`, false, true);
         } catch (error) {
             functions.createLog(error, true, false);

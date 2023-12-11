@@ -1,23 +1,43 @@
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 module.exports = {
     data: {
         name: 'profile',
         message: false,
-        options: [
-            {
-                name: "user",
-                description: "user",
-                type: 6,
-                required: false
-            }
-        ],
-        description: "A user",
+        options: [],
+        description: "A minigame",
         permissions: 0,
     },
     run: async function (client, functions, connection, message) {
-        const language = await functions.getServerLanguage(functions, connection, message.guild.id);
-        const response = await functions.getLanguageMessage(client, functions, connection, 12, language, { USER: message.user.id, GUILD: message.guild.name });
-        const embed = await functions.createEmbed(functions, "Profile", response, null);
-        message.reply({ embeds: [embed] });
+        const games = functions.games;
+
+        const transformedOptions = games.map(async (rowData)  => {
+            const emojiMap = {
+                'Count': '🔢',
+                'Snake': '🐍',
+                'Anagram': '📋',
+                'Arrow Guesser': '🔼',
+                'Age Guesser': '👥',
+                'Price Guesser': '💍',
+                'Math Challenge': '📊',
+                'Guess the Flag': '🚩',
+            };
+
+            const emoji = emojiMap[rowData.gameName] || '❓'; 
+            const description = await functions.getLanguageMessage(client, functions, connection, rowData.description, 'EN') || 'No description provided'; 
+            return new StringSelectMenuOptionBuilder()
+                .setLabel(`${emoji} ${rowData.gameName}`)
+                .setDescription(description)
+                .setValue(rowData.ID.toString());
+        });
+        const options = await Promise.all(transformedOptions);
+        const dropdown = new StringSelectMenuBuilder()
+            .setCustomId('profileInfoSelector')
+            .setPlaceholder('Select a game!')
+            .addOptions(options);
+        const row = new ActionRowBuilder()
+            .addComponents(dropdown);
+        const embed = await functions.createEmbed(functions, "Minigames", "Choose a minigame to play", null);
+        const msg = await message.reply({ embeds: [embed], components: [row] });
 
     }
 }
