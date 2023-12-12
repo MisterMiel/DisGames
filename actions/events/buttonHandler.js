@@ -12,6 +12,7 @@ module.exports = {
             try {
                 await button.run(client, functions, connection, interaction);
             } catch (error) {
+                console.log(error);
                 functions.createLog(`${button.data.name} (SLASH) | ${error}`, true, false);
                 await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
             }
