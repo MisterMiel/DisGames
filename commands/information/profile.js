@@ -37,7 +37,7 @@ module.exports = {
             .addOptions(options);
         const row = new ActionRowBuilder()
             .addComponents(dropdown);
-        const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`, true);
+        const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`);
         const embed = await functions.createEmbed(functions, `${message.user.globalName}'s profile`, "**INFORMATION**```" + `User: ${message.user.globalName}\nPoints: ${gamePoints[0].total_points}` + "```", null);
         const msg = await message.reply({ embeds: [embed], components: [row] });
 

@@ -23,18 +23,20 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
 
     if (result === undefined) {
         const embed = await functions.createEmbed(functions, game.gameName, "Hier uitleg game", game.picture);
-        
+
         message.reply({ embeds: [embed] }, { ephemeral: true })
         if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
         const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')");
     } else {
         const embed = await functions.createEmbed(functions, game.gameName, game.message, game.picture);
-        
-        if(game.sameUserAllowed === 1 && message.content.toLowerCase() === "?") {
-            const footerMessage = functions.getLanguageMessage(null, functions, connection, 27, language)
+
+        if (game.sameUserAllowed === 1) {
             embed.setFooter({ text: "You can use ? to skip the game" })
-            if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
-        
+
+            if (message.content.toLowerCase() === "?") {
+                const footerMessage = functions.getLanguageMessage(null, functions, connection, 27, language)
+                if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
+            }
         }
         if (result.lastUser === message.author.id && game.sameUserAllowed === 0) {
             functions.createLog("Deleting message from same user", false, true);
@@ -56,9 +58,9 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 game.response = Math.floor(Math.random() * 10000) + 1;
                 message.channel.send({ content: "correct" })
                 functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "', `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "' WHERE `channelID` = '" + message.channel.id + "'");
-                
+
                 await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
-            
+
             }
         } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase())) {
             functions.reactMessage(functions, message, "✅");
@@ -66,7 +68,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
             if (game.sameUserAllowed === 0 || game.allowMessageChange === 0) { gameSQL = ", `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "'"; };
             functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' " + gameSQL + " WHERE `channelID` = '" + message.channel.id + "'");
-        
+
             await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
         }
     }

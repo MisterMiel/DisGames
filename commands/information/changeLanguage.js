@@ -40,6 +40,8 @@ module.exports = {
         };
         const language = message.options.getString("language");
         const languageName = languageNames[language];
+
+        if(language == 'ES' || language == 'GE') return message.reply("This language is not yet supported");
     
         const response = await functions.getLanguageMessage(client, functions, connection, 12, language, { LANGUAGE: languageName, GUILD: message.guild.name });
         message.reply(response);
