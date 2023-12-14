@@ -5,8 +5,6 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (interaction) {
-            console.log(interaction.guildId);
-
             if (!interaction.customId) return;
             const button = client.buttons.get(interaction.customId);
             if (!button) return;

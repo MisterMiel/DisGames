@@ -26,15 +26,20 @@ async function createSlashCommands(client, functions) {
         try {
             functions.createLog(`Started refreshing ${slashCommands.length} application (/) commands.`, false, true);
 
-            const data = await rest.put(
-                Routes.applicationGuildCommands(config["Keys"]["ClientID"], '1061703062294626334'),
+            // const data = await rest.put(
+            //     Routes.applicationGuildCommands(config["Keys"]["ClientID"], '1061703062294626334'),
+            //     { body: slashCommands },
+            // );
+
+            // const secondData = await rest.put(
+            //     Routes.applicationGuildCommands(config["Keys"]["ClientID"], '797846882818457600'),
+            //     { body: slashCommands },
+            // )
+
+            await rest.put(
+                Routes.applicationCommands(config["Keys"]["ClientID"]),
                 { body: slashCommands },
             );
-
-            const secondData = await rest.put(
-                Routes.applicationGuildCommands(config["Keys"]["ClientID"], '797846882818457600'),
-                { body: slashCommands },
-            )
 
             functions.createLog(`Successfully reloaded ${slashCommands.length} application (/) commands.`, false, true);
         } catch (error) {

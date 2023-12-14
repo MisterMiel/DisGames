@@ -20,7 +20,7 @@ module.exports = {
                     } else { 
                         const language = await functions.getServerLanguage(functions, connection, message.guild.id);
                         const response = await functions.getLanuageMessage(client, functions, connection, 3, language)
-                        message.channel.send({ content: "Permissions of the bot are not set correctly. Please contact a server administrator." }) 
+                        message.channel.send({ content: response }) 
                     }
                     return;
                 }

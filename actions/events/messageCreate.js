@@ -7,7 +7,7 @@ module.exports = {
     run: function (client, functions, connection) {
         return async function (message) {
             if(message.channel.type === 'DM') return;
-            //functions.createServer(client, functions, connection, message.guild.id);
+            functions.createServer(client, functions, connection, message.guild.id);
 
             if (message.author.bot) return;
 

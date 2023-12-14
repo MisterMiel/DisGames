@@ -6,6 +6,7 @@ const config = require('./config.json');
 
 client.commands = new Collection();
 client.buttons = new Collection();
+client.embeds = new Collection();
 
 const functions = require('./handlers/functionManager.js');
 const { getEvents } = require('./handlers/eventHandler.js');

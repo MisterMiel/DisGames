@@ -3,12 +3,16 @@ module.exports = {
         name: 'profileInfoSelector'
     },
     run: async function (client, functions, connection, button) {
+        button.deferUpdate();
+
+        console.log("Open on " + button.message.id)
+        console.log(await client.embeds.get(button.message.id))
         const game = button.values[0];
         const language = await functions.getServerLanguage(functions, connection, button.guildId);
         const games = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points, RANK() OVER (ORDER BY SUM(points) DESC) AS global_position, RANK() OVER (ORDER BY points DESC) AS server_position
         FROM points
         WHERE gameID = ${game}
-        GROUP BY userID
+        GROUP BY userID, serverID
         ORDER BY global_position;`);
         let gameData;
         let embed;
@@ -40,7 +44,6 @@ module.exports = {
         }
 
         const channel = await client.channels.cache.get(button.channelId);
-        button.deferUpdate();
         await channel.messages.fetch(button.message.id).then(msg => {
             msg.edit({ embeds: [embed] });
         });
