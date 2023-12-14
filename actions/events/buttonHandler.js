@@ -5,6 +5,8 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (interaction) {
+            console.log(interaction.guildId);
+
             if (!interaction.customId) return;
             const button = client.buttons.get(interaction.customId);
             if (!button) return;
@@ -14,7 +16,9 @@ module.exports = {
             } catch (error) {
                 console.log(error);
                 functions.createLog(`${button.data.name} (SLASH) | ${error}`, true, false);
-                await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+                const language = await functions.getServerLanguage(functions, connection, interaction.guildId);
+                const response = await functions.getLanuageMessage(client, functions, connection, 2, language)
+                await interaction.reply({ content: response, ephemeral: true });
             }
 
         }
