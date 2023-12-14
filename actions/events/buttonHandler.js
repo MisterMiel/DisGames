@@ -15,7 +15,7 @@ module.exports = {
                 console.log(error);
                 functions.createLog(`${button.data.name} (SLASH) | ${error}`, true, false);
                 const language = await functions.getServerLanguage(functions, connection, interaction.guildId);
-                const response = await functions.getLanuageMessage(client, functions, connection, 2, language)
+                const response = await functions.getLanguageMessage(client, functions, connection, 2, language)
                 await interaction.reply({ content: response, ephemeral: true });
             }
 

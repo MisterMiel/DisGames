@@ -39,16 +39,14 @@ module.exports = {
             .addComponents(dropdown);
         const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`);
         const embed = await functions.createEmbed(functions, `${message.user.globalName}'s profile`, "**INFORMATION**```" + `User: ${message.user.globalName}\nPoints: ${gamePoints[0].total_points}` + "```", null);
-        const sent = await message.reply({ embeds: [embed], components: [row] });
+        const sent = await message.reply({ embeds: [embed], components: [row], fetchReply: true });
         await client.embeds.set(sent.id, message.user.id);
-        console.log(sent)
-        console.log("Saved under " + sent.id)
-        // setTimeout(async () => {
-        //     functions.createLog("Deleting profile message", false, true)
-        //     await client.embeds.delete(msg.id);
-        //     const newRow = new ActionRowBuilder()
-        //         .addComponents(dropdown.setDisabled(true));
-        //     await msg.edit({components: [newRow]});
-        // }, 15000);
+        setTimeout(async () => {
+            functions.createLog("Deleting profile message", false, true)
+            await client.embeds.delete(sent.id);
+            const newRow = new ActionRowBuilder()
+                .addComponents(dropdown.setDisabled(true));
+            await sent.edit({components: [newRow]});
+        }, 60000);
     }
 }

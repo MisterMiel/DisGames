@@ -3,12 +3,14 @@ module.exports = {
         name: 'profileInfoSelector'
     },
     run: async function (client, functions, connection, button) {
-        button.deferUpdate();
-
-        console.log("Open on " + button.message.id)
-        console.log(await client.embeds.get(button.message.id))
-        const game = button.values[0];
+        const user = await client.embeds.get(button.message.id);
         const language = await functions.getServerLanguage(functions, connection, button.guildId);
+        if (!user || user !== button.user.id) {
+            const response = await functions.getLanguageMessage(client, functions, connection, 9, language)
+            await button.reply({ content: response, ephemeral: true });
+            return;
+        }
+        const game = button.values[0];
         const games = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points, RANK() OVER (ORDER BY SUM(points) DESC) AS global_position, RANK() OVER (ORDER BY points DESC) AS server_position
         FROM points
         WHERE gameID = ${game}
@@ -30,13 +32,13 @@ module.exports = {
                 'Guess the Flag': '🚩',
             };
 
-            const emoji = emojiMap[gameName] || '❓'; 
+            const emoji = emojiMap[gameName] || '❓';
             const globalPoints = await functions.getLanguageMessage(client, functions, connection, 28, language)
             const serverPoints = await functions.getLanguageMessage(client, functions, connection, 29, language, { GUILD: button.guild.name })
             const globalPosition = await functions.getLanguageMessage(client, functions, connection, 30, language)
             const serverPosition = await functions.getLanguageMessage(client, functions, connection, 31, language, { GUILD: button.guild.name })
 
-            embed = await functions.createEmbed(functions, `${emoji} ${gameName}`, '**GLOBAL INFORMATION:**\n```'+ `${globalPoints}: ${gameData.total_points}` + '``````'+ `${globalPosition}: ${gameData.global_position}` + '```\n**SERVER INFORMATION:**\n```'+ `${serverPoints}: ${gameData.points}` + '``````'+ `${serverPosition}: ${gameData.server_position}` + '```', null);
+            embed = await functions.createEmbed(functions, `${emoji} ${gameName}`, '**GLOBAL INFORMATION:**\n```' + `${globalPoints}: ${gameData.total_points}` + '``````' + `${globalPosition}: ${gameData.global_position}` + '```\n**SERVER INFORMATION:**\n```' + `${serverPoints}: ${gameData.points}` + '``````' + `${serverPosition}: ${gameData.server_position}` + '```', null);
 
         } else {
             embed = await functions.createEmbed(functions, `NO RESULTS`, `no results`, null);
@@ -44,6 +46,8 @@ module.exports = {
         }
 
         const channel = await client.channels.cache.get(button.channelId);
+        button.deferUpdate();
+
         await channel.messages.fetch(button.message.id).then(msg => {
             msg.edit({ embeds: [embed] });
         });
