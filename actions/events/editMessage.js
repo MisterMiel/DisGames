@@ -17,7 +17,11 @@ module.exports = {
                     if (permission) {
                         message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
                         message.channel.send({ content: `**${message.author.username}:** ${message.content}` })
-                    } else { message.channel.send({ content: "Permissions of the bot are not set correctly. Please contact a server administrator." }) }
+                    } else { 
+                        const language = await functions.getServerLanguage(functions, connection, message.guild.id);
+                        const response = await functions.getLanuageMessage(client, functions, connection, 3, language)
+                        message.channel.send({ content: response }) 
+                    }
                     return;
                 }
             }

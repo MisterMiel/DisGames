@@ -51,7 +51,11 @@ module.exports = {
 
         const result = await functions.runQuery(functions, connection, `SELECT * FROM games WHERE channelID = '${message.channel.id}'`, true);
         if (result.length > 0) {
-            return message.reply("There is already a game in this channel")
+            const language = await functions.getServerLanguage(functions, connection, message.guild.id);
+            const response = await functions.getLanguageMessage(client, functions, connection, 10, language)
+            console.log(response)
+            await functions.runQuery(functions, connection, `DELETE FROM games WHERE channelID = '${message.channel.id}'`);
+            return await message.reply({ content: response })
         } else {
             const type = parseInt(message.options.getString("mode"));
 

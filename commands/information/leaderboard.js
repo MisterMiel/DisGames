@@ -2,7 +2,7 @@ const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 module.exports = {
     data: {
-        name: 'button',
+        name: 'disabled',
         message: false,
         options: [],
         description: "A minigame",

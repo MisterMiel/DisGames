@@ -55,7 +55,8 @@ module.exports.getServerLanguage = async (functions, connection, id) => {
         const language = await functions.convertLanguage(data[0].Language);
         return language;
     } else {
-        return false;
+        functions.createServer(null, functions, connection, id)
+        return 'EN';
     }
 
 }
