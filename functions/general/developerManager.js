@@ -13,11 +13,13 @@ module.exports.createLog = async (message, error, developerMode) => {
         console.log(`${colors.red}(ERROR) [${new Date().toLocaleString()}] ${message}${colors.reset}`);
         return;
     }
-    if(developerMode && config["DeveloperMode"]) {
-        console.log(`${colors.cyan}(DEV) [${new Date().toLocaleString()}] ${message}${colors.reset}`);
+    if (developerMode) {
+        if (config["DeveloperMode"]) {
+            console.log(`${colors.cyan}(DEV) [${new Date().toLocaleString()}] ${message}${colors.reset}`);
+        }
         return;
-    } else {
-        console.log(`[${new Date().toLocaleString()}] ${message}`);
     }
+    console.log(`[${new Date().toLocaleString()}] ${message}`);
+    return;
 
 };

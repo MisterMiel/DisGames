@@ -13,6 +13,5 @@ module.exports.createAnagram = async (functions, connection, response) => {
     }
 
     const scrambledMessage = charArray.join("");
-    console.log(scrambledMessage)
     return scrambledMessage;
 }

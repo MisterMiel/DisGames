@@ -18,7 +18,7 @@ module.exports = {
                     'Snake': '🐍',
                     'Anagram': '📋',
                     'Arrow Guesser': '🔼',
-                    'Age Guesser': '👥',
+                    'Random Questions': '👥',
                     'Price Guesser': '💍',
                     'Math Challenge': '📊',
                     'Guess the Flag': '🚩',

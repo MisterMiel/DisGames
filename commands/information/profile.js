@@ -19,7 +19,7 @@ module.exports = {
                     'Snake': '🐍',
                     'Anagram': '📋',
                     'Arrow Guesser': '🔼',
-                    'Age Guesser': '👥',
+                    'Random Questions': '👥',
                     'Price Guesser': '💍',
                     'Math Challenge': '📊',
                     'Guess the Flag': '🚩',
@@ -33,7 +33,6 @@ module.exports = {
                     .setValue(rowData.ID.toString());
             });
         const options = await Promise.all(transformedOptions);
-        console.log(options)
         const dropdown = new StringSelectMenuBuilder()
             .setCustomId('profileInfoSelector')
             .setPlaceholder('Select a game!')
