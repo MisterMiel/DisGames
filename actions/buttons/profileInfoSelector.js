@@ -18,6 +18,7 @@ module.exports = {
         ORDER BY global_position;`);
         let gameData;
         let embed;
+
         if (games.length >= 1) {
             const gameName = functions.games[game - 1].gameName;
             const emojiMap = {
@@ -44,8 +45,10 @@ module.exports = {
                 const description = await functions.getLanguageMessage(client, functions, connection, 4, language)
                 embed = await functions.createEmbed(functions, `${emoji} ${gameName}`, description, null);
             }
+        } else {
+            const description = await functions.getLanguageMessage(client, functions, connection, 4, language)
+            embed = await functions.createEmbed(functions, `${functions.games[game - 1].gameName}`, description, null);
         }
-
         const channel = await client.channels.cache.get(button.channelId);
         button.deferUpdate();
 

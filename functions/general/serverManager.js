@@ -65,7 +65,6 @@ module.exports.getServerLanguage = async (functions, connection, id) => {
 
 module.exports.updateServerLanguage = async (functions, connection, id, language) => {
     const convertedLanguage = await functions.convertLanguage(language, true);
-    console.log(convertedLanguage)
     for (let i = 0; i < servers.length; i++) {
         if (servers[i].ID === id) {
             servers[i].Language = convertedLanguage

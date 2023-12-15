@@ -26,7 +26,7 @@ module.exports = {
                         value: "4"
                     },
                     {
-                        name: "👥 Age Guesser",
+                        name: "👥 Random Questions",
                         value: "5"
                     },
                     {
