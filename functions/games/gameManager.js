@@ -24,7 +24,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
         return message.reply({ content: response })
     };
 
-    const user = await functions.createUser(functions, connection, message.author.id)
+    const user = await functions.createUser(functions, connection, message.user.id)
 
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
     if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
