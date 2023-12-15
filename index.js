@@ -1,4 +1,4 @@
-const { Client, Intents, Collection, MessageEmbed, MessageButton, MessageActionRow, Permissions } = require('discord.js');
+const { Client, Intents, Collection, ActivityType, MessageButton, MessageActionRow, Permissions } = require('discord.js');
 
 
 const client = new Client({ intents: 34305 });
@@ -18,6 +18,7 @@ let connection = null;
 client.on('ready', async () => {
     functions.createLog(`Logged in as ${client.user.tag}`, false, false);
 
+    client.user.setActivity('v0.3', { type: ActivityType.Watching });
 
     connection = await functions.createConnection(functions);
 
