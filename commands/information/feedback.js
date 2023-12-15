@@ -1,6 +1,6 @@
 module.exports = {
     data: {
-        name: 'feedback',
+        name: 'disabled',
         message: false,
         options: [
             {

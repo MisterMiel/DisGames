@@ -18,7 +18,6 @@ let connection = null;
 client.on('ready', async () => {
     functions.createLog(`Logged in as ${client.user.tag}`, false, false);
 
-    await functions.createLog("Teer", false, false)
 
     connection = await functions.createConnection(functions);
 
@@ -36,6 +35,8 @@ client.on('ready', async () => {
     const slashCommands = await createSlashCommands(client, functions);
 
     const servers = await functions.getAllServers(client, functions, connection);
+
+    const users = await functions.getAllUsers(functions, connection);
     //const myServer = await functions.getServer(client, functions, connection, '1061703062294626334');
 
 });
