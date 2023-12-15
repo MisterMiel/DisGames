@@ -19,7 +19,7 @@ module.exports = {
                         message.channel.send({ content: `**${message.author.username}:** ${message.content}` })
                     } else { 
                         const language = await functions.getServerLanguage(functions, connection, message.guild.id);
-                        const response = await functions.getLanuageMessage(client, functions, connection, 3, language)
+                        const response = await functions.getLanguageMessage(client, functions, connection, 3, language)
                         message.channel.send({ content: response }) 
                     }
                     return;

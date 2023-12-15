@@ -11,26 +11,29 @@ module.exports = {
 
         const games = functions.games;
 
-        const transformedOptions = games.map(async (rowData) => {
-            const emojiMap = {
-                'Count': '🔢',
-                'Snake': '🐍',
-                'Anagram': '📋',
-                'Arrow Guesser': '🔼',
-                'Age Guesser': '👥',
-                'Price Guesser': '💍',
-                'Math Challenge': '📊',
-                'Guess the Flag': '🚩',
-            };
+        const transformedOptions = games
+            .filter(rowData => rowData.gameDisabled !== 1)
+            .map(async (rowData) => {
+                const emojiMap = {
+                    'Count': '🔢',
+                    'Snake': '🐍',
+                    'Anagram': '📋',
+                    'Arrow Guesser': '🔼',
+                    'Age Guesser': '👥',
+                    'Price Guesser': '💍',
+                    'Math Challenge': '📊',
+                    'Guess the Flag': '🚩',
+                };
 
-            const emoji = emojiMap[rowData.gameName] || '❓';
-            const description = await functions.getLanguageMessage(client, functions, connection, rowData.description, 'EN') || 'No description provided';
-            return new StringSelectMenuOptionBuilder()
-                .setLabel(`${emoji} ${rowData.gameName}`)
-                .setDescription(description)
-                .setValue(rowData.ID.toString());
-        });
+                const emoji = emojiMap[rowData.gameName] || '❓';
+                const description = await functions.getLanguageMessage(client, functions, connection, rowData.description, 'EN') || 'No description provided';
+                return new StringSelectMenuOptionBuilder()
+                    .setLabel(`${emoji} ${rowData.gameName}`)
+                    .setDescription(description)
+                    .setValue(rowData.ID.toString());
+            });
         const options = await Promise.all(transformedOptions);
+        console.log(options)
         const dropdown = new StringSelectMenuBuilder()
             .setCustomId('profileInfoSelector')
             .setPlaceholder('Select a game!')
@@ -46,7 +49,7 @@ module.exports = {
             await client.embeds.delete(sent.id);
             const newRow = new ActionRowBuilder()
                 .addComponents(dropdown.setDisabled(true));
-            await sent.edit({components: [newRow]});
+            await sent.edit({ components: [newRow] });
         }, 60000);
     }
 }

@@ -14,17 +14,28 @@ module.exports.getAllGameRules = async (client, functions, connection) => {
 module.exports.games = games;
 
 module.exports.runGame = async (functions, connection, type, message, result) => {
-    const addSQL = "";
+    let addSQL = "";
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
-    if (type == 3 || type == 5) addSQL = `languageID = '${language}' AND`;
+    if (type == 3 || type == 5 || type == 7) addSQL = `languageID = '${language}' AND`;
     const data = await functions.runQuery(functions, connection, `SELECT * FROM game_data LEFT JOIN game_types ON game_data.gameID = game_types.ID WHERE ${addSQL} gameID = '${type}' ORDER BY RAND() LIMIT 1`);
     const game = data[0];
+    if(game.gameDisabled === 1) {
+        const response = await functions.getLanguageMessage(null, functions, connection, 5, language)
+        return message.reply({ content: response })
+    };
+
+    const user = await functions.createUser(functions, connection, message.author.id)
+
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
     if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
     if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = anagram; }
 
     if (result === undefined) {
-        const embed = await functions.createEmbed(functions, game.gameName, "Hier uitleg game", game.picture);
+        const description = await functions.getLanguageMessage(null, functions, connection, 23, language)
+        const skipGame = await functions.getLanguageMessage(null, functions, connection, 27, language)
+
+        const embed = await functions.createEmbed(functions, game.gameName, `${description}\n${game.message}`, game.picture);
+        embed.setFooter({ text: skipGame })
         const response = await functions.getLanguageMessage(null, functions, connection, 11, language)
         await message.reply({ content: response, ephemeral: true })
         await message.channel.send({ embeds: [embed] })
@@ -38,12 +49,12 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             if (message.content.toLowerCase() === "?") {
                 const footerMessage = functions.getLanguageMessage(null, functions, connection, 27, language)
                 if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
+                functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' WHERE `channelID` = '" + message.channel.id + "'");
             }
         }
         if (result.lastUser === message.author.id && game.sameUserAllowed === 0) {
             functions.createLog("Deleting message from same user", false, true);
-            //const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
-            const permission = true;
+            const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
             if (permission) {
                 message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
             } else { 
