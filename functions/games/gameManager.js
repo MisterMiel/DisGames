@@ -19,20 +19,20 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
     if (type == 3 || type == 5 || type == 7) addSQL = `languageID = '${language}' AND`;
     const data = await functions.runQuery(functions, connection, `SELECT * FROM game_data LEFT JOIN game_types ON game_data.gameID = game_types.ID WHERE ${addSQL} gameID = '${type}' ORDER BY RAND() LIMIT 1`);
     const game = data[0];
-    if(game.gameDisabled === 1) {
+    if (game.gameDisabled === 1) {
         const response = await functions.getLanguageMessage(null, functions, connection, 5, language)
         return message.reply({ content: response })
     };
 
-
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
     if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
+    if (type === 2) { game.message = await functions.getLanguageMessage(null, functions, connection, parseInt(game.message), language); }
     if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = "```" + anagram + "```"; }
-
+    if (type === 4) { game.message = await functions.getLanguageMessage(null, functions, connection, game.gameRules, language) }
     if (result === undefined) {
         const description = await functions.getLanguageMessage(null, functions, connection, game.description, language)
         const skipGame = await functions.getLanguageMessage(null, functions, connection, 27, language)
-        if(game.message === null) game.message = "";
+        if (game.message === null) game.message = "";
         const embed = await functions.createEmbed(functions, game.gameName, `${description}\n${game.message}`, game.picture);
         if (game.sameUserAllowed === 1) { embed.setFooter({ text: skipGame }) }
         const response = await functions.getLanguageMessage(null, functions, connection, 11, language)
@@ -57,9 +57,9 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             const permission = true;
             if (permission) {
                 message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
-            } else { 
+            } else {
                 const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
-                message.channel.send({ content: noPerms }) 
+                message.channel.send({ content: noPerms })
             }
             return;
         }
