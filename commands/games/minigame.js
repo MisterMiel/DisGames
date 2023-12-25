@@ -1,3 +1,6 @@
+const { PermissionsBitField } = require('discord.js');
+
+
 module.exports = {
     data: {
         name: 'setupgame',
@@ -45,7 +48,7 @@ module.exports = {
             }
         ],
         description: "A minigame",
-        permissions: 0,
+        permissions: PermissionsBitField.Flags.ManageMessages,
     },
     run: async function (client, functions, connection, message) {
 
