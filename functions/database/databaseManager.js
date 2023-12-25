@@ -22,12 +22,11 @@ module.exports.createConnection = async (functions) => {
 };
 
 module.exports.runQuery = async (functions, connection, query, consoleLog) => {
-    console.log(consoleLog)
-    if (consoleLog !== false) { functions.createLog("Trying to run a query", false, true); }
+    if (consoleLog === undefined || consoleLog === true) { functions.createLog("Trying to run a query", false, true); }
     return new Promise((resolve, reject) => {
         connection.query(query, (err, result) => {
             if (err) throw err;
-            if (consoleLog !== false) {
+            if (consoleLog === undefined || consoleLog === true) {
                 functions.createLog("Query runned", false, true);
                 if (consoleLog) {
                     functions.createLog("Query Output", true, false)
