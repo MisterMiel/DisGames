@@ -1,4 +1,6 @@
 const config = require('../../config.json');
+const { PermissionsBitField } = require('discord.js');
+
 module.exports = {
     data: {
         name: 'messageUpdate',
@@ -13,7 +15,7 @@ module.exports = {
                 const channel = channels[0];
                 if (message.id === channel.messageID && channel.allowMessageChange === 0) {
                     functions.createLog("Deleting message from same user", false, true);
-                    var permission = true;
+                    const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
                     if (permission) {
                         message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
                         message.channel.send({ content: `**${message.author.username}:** ${message.content}` })
