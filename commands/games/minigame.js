@@ -26,7 +26,7 @@ module.exports = {
                         value: "4"
                     },
                     {
-                        name: "👥 Random Questions",
+                        name: "👥 Trivia",
                         value: "5"
                     },
                     {

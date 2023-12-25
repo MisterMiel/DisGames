@@ -26,7 +26,7 @@ module.exports.getServer = async (client, functions, connection, id) => {
 
 module.exports.createServer = async (client, functions, connection, id) => {
 
-    const data = await functions.runQuery(functions, connection, `SELECT * FROM servers WHERE ID = '${id}'`);
+    const data = await functions.runQuery(functions, connection, `SELECT * FROM servers WHERE ID = '${id}'`, false);
     if (data.length > 0) {
         return false;
     }
