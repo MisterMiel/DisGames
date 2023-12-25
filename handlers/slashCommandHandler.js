@@ -11,7 +11,7 @@ async function createSlashCommands(client, functions) {
         let commandObject = {
             name: commands.data.name,
             description: commands.data.description || "No description provided",
-            default_member_permissions: commands.data.permissions || 0,
+            default_member_permissions: 0,
             options: commands.data.options
         };
         slashCommands.push(commandObject);
