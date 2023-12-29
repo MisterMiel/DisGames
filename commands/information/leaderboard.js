@@ -17,5 +17,6 @@ module.exports = {
         );
         const embed = await functions.createEmbed(functions, "Test", "Test", null);
         const msg = await message.channel.send({ embeds: [embed], components: [actionRow] });
+        //TODO: Finish command
     }
 }
