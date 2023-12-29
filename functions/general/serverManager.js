@@ -39,6 +39,7 @@ module.exports.createServer = async (client, functions, connection, id) => {
         points: 0
     }
     servers.push(server);
+    functions.createNewStat(functions, connection, -4, 1);
     return true;
 }
 

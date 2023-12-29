@@ -40,6 +40,9 @@ client.on('ready', async () => {
     const users = await functions.getAllUsers(functions, connection);
     //const myServer = await functions.getServer(client, functions, connection, '1061703062294626334');
 
+    const stats = await functions.updateStats(client, functions, connection);
 });
+
+
 
 client.login(config['Keys']['Token']);

@@ -14,6 +14,8 @@ module.exports.getAllGameRules = async (client, functions, connection) => {
 module.exports.games = games;
 
 module.exports.runGame = async (functions, connection, type, message, result) => {
+    //TODO: Add new game data
+
     let addSQL = "";
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
     if (type == 3 || type == 5 || type == 7) addSQL = `languageID = '${language}' AND`;
@@ -29,6 +31,9 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
     if (type === 2) { game.message = await functions.getLanguageMessage(null, functions, connection, parseInt(game.message), language); }
     if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = "```" + anagram + "```"; }
     if (type === 4) { game.message = await functions.getLanguageMessage(null, functions, connection, game.gameRules, language) }
+
+    //TODO: Add website link manual for each image
+
     if (result === undefined) {
         const description = await functions.getLanguageMessage(null, functions, connection, game.description, language)
         const skipGame = await functions.getLanguageMessage(null, functions, connection, 27, language)
@@ -38,6 +43,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
         const response = await functions.getLanguageMessage(null, functions, connection, 11, language)
         const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
         if (permission) {
+            //TODO: send command user a message with the error
             await message.reply({ content: response, ephemeral: true })
             await message.channel.send({ embeds: [embed] })
             const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')", false);
@@ -90,6 +96,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
             if (game.sameUserAllowed === 0 || game.allowMessageChange === 0) { gameSQL = ", `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "'"; };
             functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' " + gameSQL + " WHERE `channelID` = '" + message.channel.id + "'", false);
+            functions.createNewStat(functions, connection, type, );
 
             await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
         }

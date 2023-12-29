@@ -8,6 +8,8 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (message) {
+
+            //TODO: Check if command is in dm
             if (!message.commandName) return;
             const command = client.commands.get(message.commandName);
             if (!command) return;

@@ -10,7 +10,7 @@ module.exports = {
     run: async function (client, functions, connection, message) {
 
         const games = functions.games;
-
+        //TODO: Add badges section to profile
         const transformedOptions = games
             .filter(rowData => rowData.gameDisabled !== 1)
             .map(async (rowData) => {
