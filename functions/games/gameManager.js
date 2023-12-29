@@ -36,9 +36,16 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
         const embed = await functions.createEmbed(functions, game.gameName, `${description}\n${game.message}`, game.picture);
         if (game.sameUserAllowed === 1) { embed.setFooter({ text: skipGame }) }
         const response = await functions.getLanguageMessage(null, functions, connection, 11, language)
-        await message.reply({ content: response, ephemeral: true })
-        await message.channel.send({ embeds: [embed] })
-        const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')", false);
+        const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
+        if (permission) {
+            await message.reply({ content: response, ephemeral: true })
+            await message.channel.send({ embeds: [embed] })
+            const insertedGame = await functions.runQuery(functions, connection, "INSERT INTO `games` (`channelID`, `serverID`, `type`, `response`) VALUES ('" + message.channel.id + "', '" + message.guild.id + "', '" + type + "', '" + game.response + "')", false);
+        } else {
+            const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+            console.log(noPerms)
+        }
+
     } else {
         const embed = await functions.createEmbed(functions, game.gameName, game.message, game.picture);
         if (game.sameUserAllowed === 1) {
