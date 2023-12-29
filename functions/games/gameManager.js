@@ -80,8 +80,12 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             if (!isNaN(message.content)) {
                 if (parseInt(message.content) > parseInt(result.response)) {
                     functions.reactMessage(functions, message, "🔽");
+                    functions.runQuery(functions, connection, "UPDATE `games` SET  `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "' WHERE `channelID` = '" + message.channel.id + "'", false);
+
                 } else if (parseInt(message.content) < parseInt(result.response)) {
                     functions.reactMessage(functions, message, "🔼");
+                    functions.runQuery(functions, connection, "UPDATE `games` SET  `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "' WHERE `channelID` = '" + message.channel.id + "'", false);
+
                 } else {
                     functions.reactMessage(functions, message, "✅");
                     game.response = Math.floor(Math.random() * 10000) + 1;
@@ -93,12 +97,12 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 }
             } else {
                 const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
-            if (permission) {
-                message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
-            } else {
-                const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
-                message.channel.send({ content: noPerms })
-            }
+                if (permission) {
+                    message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
+                } else {
+                    const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+                    message.channel.send({ content: noPerms })
+                }
             }
         } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase())) {
             functions.reactMessage(functions, message, "✅");
@@ -109,7 +113,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             functions.createNewStat(functions, connection, type);
 
             await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
-        } else if(type === 1) {
+        } else if (type === 1) {
             const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
             if (permission) {
                 message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
