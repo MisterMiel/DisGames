@@ -7,12 +7,11 @@ module.exports = {
         type: 'on',
     },
     run: function (client, functions, connection) {
-        return async function (message) {
-
-            //TODO: Check if command is in dm
+        return async function (message) {            
             if (!message.commandName) return;
             const command = client.commands.get(message.commandName);
             if (!command) return;
+            if(!message.guildId) return message.reply({ content: 'This command is not available in DMs', ephemeral: true });
             const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
             if (permission || command.data.permission === 0) {
                 try {
