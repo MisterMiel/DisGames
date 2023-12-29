@@ -86,6 +86,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 game.response = Math.floor(Math.random() * 10000) + 1;
                 message.channel.send({ content: "correct" })
                 functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "', `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "' WHERE `channelID` = '" + message.channel.id + "'", false);
+                functions.createNewStat(functions, connection, type);
 
                 await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
 
@@ -96,7 +97,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
             if (game.sameUserAllowed === 0 || game.allowMessageChange === 0) { gameSQL = ", `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "'"; };
             functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "' " + gameSQL + " WHERE `channelID` = '" + message.channel.id + "'", false);
-            functions.createNewStat(functions, connection, type, );
+            functions.createNewStat(functions, connection, type);
 
             await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
         }
