@@ -30,7 +30,7 @@ module.exports.createServer = async (client, functions, connection, id) => {
     if (data.length > 0) {
         return false;
     }
-
+    functions.createNewStat(functions, connection, -4, 1);
     functions.createLog("Creating new server", false, true);
     const insert = await functions.runQuery(functions, connection, "INSERT INTO servers (ID) VALUES ('" + id + "')", false);
     const server = {
@@ -39,7 +39,7 @@ module.exports.createServer = async (client, functions, connection, id) => {
         points: 0
     }
     servers.push(server);
-    functions.createNewStat(functions, connection, -4, 1);
+
     return true;
 }
 

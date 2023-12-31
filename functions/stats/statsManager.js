@@ -3,11 +3,12 @@ const schedule = require('node-schedule');
 module.exports.createNewStat = async (functions, connection, gameID, value) => {
     const date = new Date();
     const formattedDate = date.toISOString().slice(0, 10);
-
     const gameDetails = await functions.games;
     const game = gameDetails[gameID - 1];
-    const points = game.pointPerGame;
-    if (gameID > 0) { value = points; }
+    if (gameID > 0) { 
+        const points = game.pointPerGame
+        value = points; 
+    }
     const data = await functions.runQuery(functions, connection, `SELECT * FROM statistics WHERE gameID = "${gameID}" AND date = "${formattedDate}"`, false);
     if (data.length === 0) {
         const insert = await functions.runQuery(functions, connection, `INSERT INTO statistics (gameID, date, value) VALUES ("${gameID}", "${formattedDate}", "${value}")`, false);

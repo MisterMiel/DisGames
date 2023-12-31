@@ -17,7 +17,7 @@ let connection = null;
 
 client.on('ready', async () => {
     functions.createLog(`Logged in as ${client.user.tag}`, false, false);
-
+    //TODO: Change status to old one
     client.user.setActivity('v0.3', { type: ActivityType.Watching });
 
     connection = await functions.createConnection(functions);
