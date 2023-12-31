@@ -89,7 +89,9 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 } else {
                     functions.reactMessage(functions, message, "✅");
                     game.response = Math.floor(Math.random() * 10000) + 1;
-                    message.channel.send({ content: "correct" })
+
+                    const response = await functions.getLanguageMessage(null, functions, connection, 33, language)
+                    message.channel.send({ content: response })
                     functions.runQuery(functions, connection, "UPDATE `games` SET `response` = '" + game.response + "', `lastUser` = '" + message.author.id + "', `messageID` = '" + message.id + "' WHERE `channelID` = '" + message.channel.id + "'", false);
                     functions.createNewStat(functions, connection, type);
 
