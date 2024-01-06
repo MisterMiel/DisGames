@@ -17,7 +17,7 @@ let connection = null;
 
 client.on('ready', async () => {
     functions.createLog(`Logged in as ${client.user.tag}`, false, false);
-    //TODO: Change status to old one
+    
     client.user.setActivity('v0.3', { type: ActivityType.Watching });
 
     connection = await functions.createConnection(functions);
@@ -41,6 +41,11 @@ client.on('ready', async () => {
     //const myServer = await functions.getServer(client, functions, connection, '1061703062294626334');
 
     const stats = await functions.updateStats(client, functions, connection);
+
+    setInterval(async () => {
+        client.user.setActivity(`${client.guilds.cache.size} servers`, { type: ActivityType.Watching });
+    }, 5 * 5 * 1000);
+
 });
 
 
