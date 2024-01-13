@@ -61,9 +61,17 @@ module.exports = {
         } else {
             const type = parseInt(message.options.getString("mode"));
             const gameData = await functions.runQuery(functions, connection, `SELECT * FROM games WHERE serverID = '${message.guild.id}' AND type = '${type}'`, true);
-            if(gameData.length > 0) {
-                const response = await functions.getLanguageMessage(client, functions, connection, 6, language)
-                return message.reply({ content: response })
+            if (gameData.length > 0) {
+
+                const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
+                if (permission) {
+                    const response = await functions.getLanguageMessage(client, functions, connection, 6, language)
+                    return message.reply({ content: response })
+                } else {
+                    const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+                    console.log(noPerms)
+                }
+
             }
             functions.runGame(functions, connection, type, message);
 

@@ -16,6 +16,19 @@ module.exports.games = games;
 module.exports.runGame = async (functions, connection, type, message, result) => {
     //TODO: Add new game data
 
+
+
+    //TODO: (ERROR) [1/7/2024, 5:51:49 PM] Query Output
+    // [
+    //     RowDataPacket {
+    //       channelID: '1090211397109022830',
+    //       serverID: '1063897173076484146',
+    //       type: 2,
+    //       response: 'r',
+    //       lastUser: '1063895947777687714',
+    //       messageID: '1193597101507084339'
+    //     }
+    //   ]
     let addSQL = "";
     const language = await functions.getServerLanguage(functions, connection, message.guild.id)
     if (type == 3 || type == 5 || type == 7) addSQL = `languageID = '${language}' AND`;

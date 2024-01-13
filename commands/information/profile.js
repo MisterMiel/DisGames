@@ -1,4 +1,4 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, PermissionsBitField } = require('discord.js');
 module.exports = {
     data: {
         name: 'profile',
@@ -41,14 +41,23 @@ module.exports = {
             .addComponents(dropdown);
         const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`);
         const embed = await functions.createEmbed(functions, `${message.user.globalName}'s profile`, "**INFORMATION**```" + `User: ${message.user.globalName}\nPoints: ${gamePoints[0].total_points}` + "```", null);
-        const sent = await message.reply({ embeds: [embed], components: [row], fetchReply: true });
-        await client.embeds.set(sent.id, message.user.id);
-        setTimeout(async () => {
-            functions.createLog("Deleting profile message", false, true)
-            await client.embeds.delete(sent.id);
-            const newRow = new ActionRowBuilder()
-                .addComponents(dropdown.setDisabled(true));
-            await sent.edit({ components: [newRow] });
-        }, 60000);
+        
+        const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
+        if (permission) {
+            //TODO: send command user a message with the error
+            const sent = await message.reply({ embeds: [embed], components: [row], fetchReply: true });
+            await client.embeds.set(sent.id, message.user.id);
+            setTimeout(async () => {
+                functions.createLog("Deleting profile message", false, true)
+                await client.embeds.delete(sent.id);
+                const newRow = new ActionRowBuilder()
+                    .addComponents(dropdown.setDisabled(true));
+                await sent.edit({ components: [newRow] });
+            }, 60000);
+        } else {
+            const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+            console.log(noPerms)
+        }
+        
     }
 }

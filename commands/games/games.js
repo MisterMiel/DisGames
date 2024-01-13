@@ -1,4 +1,4 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, PermissionsBitField } = require('discord.js');
 module.exports = {
     data: {
         name: 'games',
@@ -43,7 +43,14 @@ module.exports = {
             .addComponents(dropdown);
         const response = await functions.getLanguageMessage(client, functions, connection, 8, language)
         const embed = await functions.createEmbed(functions, "Minigames", response, null);
-        const msg = await message.reply({ embeds: [embed], components: [row], fetchReply: true });
+        const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
+        if (permission) {
+            //TODO: send command user a message with the error
+            const msg = await message.reply({ embeds: [embed], components: [row], fetchReply: true });
+        } else {
+            const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+            console.log(noPerms)
+        }
 
     }
 }
