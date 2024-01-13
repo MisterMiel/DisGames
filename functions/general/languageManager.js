@@ -30,6 +30,7 @@ module.exports.getLanguageMessage = async (client, functions, connection, id, la
 
 module.exports.convertLanguage = async (language, reverse = false) => {
     const languageMapping = {
+        0: 'BAN',
         1: 'EN',
         2: 'NL',
         3: 'ES',

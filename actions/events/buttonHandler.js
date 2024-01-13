@@ -5,6 +5,8 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (interaction) {
+            if(await functions.getServerLanguage(functions, connection, interaction.guild.id) === 'BAN') { return console.log(`Server: ${interaction.guild.name} (${interaction.guild.id}) has been banned`)}      
+
             if (!interaction.customId) return;
             const button = client.buttons.get(interaction.customId);
             if (!button) return;

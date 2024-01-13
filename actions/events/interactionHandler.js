@@ -7,7 +7,8 @@ module.exports = {
         type: 'on',
     },
     run: function (client, functions, connection) {
-        return async function (message) {            
+        return async function (message) {     
+            if(await functions.getServerLanguage(functions, connection, message.guild.id) === 'BAN') { return console.log(`Server: ${message.guild.name} (${message.guild.id}) has been banned`)}      
             if (!message.commandName) return;
             const command = client.commands.get(message.commandName);
             if (!command) return;
