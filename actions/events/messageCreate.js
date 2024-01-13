@@ -6,8 +6,10 @@ module.exports = {
     },
     run: function (client, functions, connection) {
         return async function (message) {
+            
             if(message.channel.type === 'DM') return;
             functions.createServer(client, functions, connection, message.guild.id);
+            if(await functions.getServerLanguage(functions, connection, message.guild.id) === 'BAN') { return console.log(`Server: ${message.guild.name} (${message.guild.id}) has been banned`)}      
 
             if (message.author.bot) return;
 
