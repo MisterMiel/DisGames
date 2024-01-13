@@ -46,7 +46,14 @@ module.exports = {
         if(language == 'ES' || language == 'GE') return message.reply("This language is not yet supported");
     
         const response = await functions.getLanguageMessage(client, functions, connection, 12, language, { LANGUAGE: languageName, GUILD: message.guild.name });
-        message.reply(response);
+        const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
+        if (permission) {
+            //TODO: send command user a message with the error
+            message.reply(response);
+        } else {
+            const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
+            console.log(noPerms)
+        }
         const server = await functions.updateServerLanguage(functions, connection, message.guild.id, language);
 
     }
