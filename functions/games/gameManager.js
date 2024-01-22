@@ -128,7 +128,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
             functions.createNewStat(functions, connection, type);
 
             await functions.setGamePoints(functions, connection, type, message.author.id, message.guild.id);
-        } else if (type === 1) {
+        } else if (type === 1 || type === 2) {
             const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.ManageMessages)
             if (permission) {
                 message.delete(message.id).catch(err => { functions.createLog(err, true, false) });
@@ -136,6 +136,6 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
                 message.channel.send({ content: noPerms })
             }
-        }
+        } 
     }
 }
