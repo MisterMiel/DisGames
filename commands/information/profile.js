@@ -41,7 +41,7 @@ module.exports = {
             .addComponents(dropdown);
         const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`);
         const embed = await functions.createEmbed(functions, `${message.user.globalName}'s profile`, "**INFORMATION**```" + `User: ${message.user.globalName}\nPoints: ${gamePoints[0].total_points}` + "```", null);
-        
+
         const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
         if (permission) {
             //TODO: send command user a message with the error
@@ -58,6 +58,6 @@ module.exports = {
             const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
             console.log(noPerms)
         }
-        
+
     }
 }
