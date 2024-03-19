@@ -1,1 +1,2 @@
 # DisGames
+Welcome to DisGames, a dynamic Discord bot designed to bring fun, interactive games directly into your Discord server. With a strong presence in over 500+ servers, DisGames offers a variety of games to enhance your community's engagement and provide endless entertainment.

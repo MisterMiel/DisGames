@@ -48,20 +48,5 @@ client.on('ready', async () => {
 
 });
 
-const fs = require('fs');
-const path = require('path');
-
-let logsFolder = `./logs`; // Zet hier de folder waar de log bestanden in moeten komen
-
-process.on('uncaughtException', (err) => {
-  let currentTime = new Date();
-  let logsName = `ERROR__${currentTime.getDate()}-${currentTime.getMonth() + 1}-${currentTime.getFullYear()}__${currentTime.getHours()}_${currentTime.getMinutes()}_${currentTime.getSeconds()}.txt`;
-
-  fs.writeFileSync(path.join(__dirname, logsFolder, logsName), `${err.name}\n\n${err.stack}`);
-
-  console.log(`Error logged in ${logsName}`);
-
-  process.exit(); // Afhankelijk van of je wilt dat de bot uitgaat na een error, moet je dit erin laten of eruit halen
-});
 
 client.login(config['Keys']['Token']);

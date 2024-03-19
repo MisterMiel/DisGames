@@ -33,6 +33,8 @@ module.exports.updateStats = async (client, functions, connection) => {
         const data = await functions.runQuery(functions, connection, `SELECT 'users' as users, COUNT(*) as row_count FROM users UNION ALL SELECT 'points', SUM(points) FROM points`, false);
         data.push({ users: 'servers', row_count: await client.guilds.cache.size });
         data.push({ users: 'members', row_count: await functions.getTotalMembers(client) });
+        
+        //TODO: send a message to a server with the stats
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 const row = data[i];

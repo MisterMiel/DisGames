@@ -24,7 +24,6 @@ module.exports.getLanguageMessage = async (client, functions, connection, id, la
             return message;
        }
     }
-
     return 'No message set for this language.';
 };
 
