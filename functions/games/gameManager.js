@@ -1,6 +1,7 @@
 const { PermissionsBitField } = require('discord.js');
 
 const games = [];
+const regex = /^[A-Za-z]+$/;
 
 module.exports.getAllGameRules = async (client, functions, connection) => {
     functions.createLog("Fetching all games", false, true);
@@ -119,7 +120,7 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                     message.channel.send({ content: noPerms })
                 }
             }
-        } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase())) {
+        } else if (result.response.toLowerCase() === message.content.toLowerCase() || (type === 2 && result.response.toLowerCase() === message.content.charAt(0).toLowerCase() && regex.test(message.content))) {
             functions.reactMessage(functions, message, "✅");
             var gameSQL = "";
             if (game.replyMessage == 1) message.channel.send({ embeds: [embed] })
