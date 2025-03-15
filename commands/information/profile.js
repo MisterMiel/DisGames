@@ -39,7 +39,7 @@ module.exports = {
             .addOptions(options);
         const row = new ActionRowBuilder()
             .addComponents(dropdown);
-        const gamePoints = await functions.runQuery(functions, connection, `SELECT *, SUM(points) as total_points FROM points WHERE userID = '${message.user.id}'`);
+        const gamePoints = await functions.runQuery(functions, connection, `SELECT userID, SUM(points) AS total_points FROM points WHERE userID = '${message.user.id}' GROUP BY userID`);
         const embed = await functions.createEmbed(functions, `${message.user.globalName}'s profile`, "**INFORMATION**```" + `User: ${message.user.globalName}\nPoints: ${gamePoints[0].total_points}` + "```", null);
 
         const permission = await functions.checkPermission(functions, message, PermissionsBitField.Flags.SendMessages)
