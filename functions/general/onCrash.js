@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-let logsFolder = `../../logs`; // Zet hier de folder waar de log bestanden in moeten komen
+const logsFolder = path.join(process.cwd(), './logs');
 
 process.on('uncaughtException', (err) => {
     let currentTime = new Date();
