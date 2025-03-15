@@ -1,4 +1,4 @@
-const config = require('../../config.json');
+require("dotenv").config();
 module.exports = {
     data: {
         name: 'messageCreate',
@@ -13,7 +13,7 @@ module.exports = {
 
             if (message.author.bot) return;
 
-            const commandName = message.content.split(config['Prefix'])[1];
+            const commandName = message.content.split(process.env.PREFIX)[1];
             const command = client.commands.get(commandName);
 
             if (!command) return;

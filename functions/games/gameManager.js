@@ -39,14 +39,12 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
         const response = await functions.getLanguageMessage(null, functions, connection, 5, language)
         return message.reply({ content: response })
     };
-
     if (type === 1 && result !== undefined) { game.response = parseInt(result.response) + 1; }
     if (type === 2 && result !== undefined) { game.response = message.content.charAt(message.content.length - 1).toLowerCase(); }
     if (type === 2) { game.message = await functions.getLanguageMessage(null, functions, connection, parseInt(game.message), language); }
     if (type === 3) { const anagram = await functions.createAnagram(functions, connection, game.response); game.message = "```" + anagram + "```"; }
     if (type === 4) { game.message = await functions.getLanguageMessage(null, functions, connection, game.gameRules, language) }
-
-    //TODO: Add website link manual for each image
+    if (type === 8) { game.picture = `https://www.worldometers.info/img/flags/${game.picture}` }
 
     if (result === undefined) {
         const description = await functions.getLanguageMessage(null, functions, connection, game.description, language)
@@ -137,6 +135,6 @@ module.exports.runGame = async (functions, connection, type, message, result) =>
                 const noPerms = await functions.getLanguageMessage(null, functions, connection, 3, language)
                 message.channel.send({ content: noPerms })
             }
-        } 
+        }
     }
 }

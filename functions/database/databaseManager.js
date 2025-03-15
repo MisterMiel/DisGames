@@ -1,15 +1,15 @@
 const mysql = require('mysql');
-const config = require('../../config.json');
+require("dotenv").config();
 
 module.exports.createConnection = async (functions) => {
     functions.createLog("Trying to connect to database", false, true);
     return new Promise((resolve, reject) => {
 
         var connection = mysql.createConnection({
-            host: config["Keys"]["Database"]["Host"],
-            user: config["Keys"]["Database"]["User"],
-            password: config["Keys"]["Database"]["Password"],
-            database: config["Keys"]["Database"]["Database"]
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
         })
 
         connection.connect(err => {

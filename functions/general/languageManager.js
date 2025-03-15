@@ -1,4 +1,3 @@
-const config = require('../../config.json');
 let languages = [];
 
 module.exports.getLanguages = async (client, functions, connection) => {

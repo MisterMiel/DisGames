@@ -2,7 +2,7 @@ const { Client, Intents, Collection, ActivityType, MessageButton, MessageActionR
 
 
 const client = new Client({ intents: 34305 });
-const config = require('./config.json');
+require("dotenv").config();
 
 client.commands = new Collection();
 client.buttons = new Collection();
@@ -49,4 +49,4 @@ client.on('ready', async () => {
 });
 
 
-client.login(config['Keys']['Token']);
+client.login(process.env.TOKEN);

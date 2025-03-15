@@ -1,4 +1,3 @@
-const config = require('../../config.json');
 const { PermissionsBitField } = require('discord.js');
 
 module.exports = {

@@ -1,4 +1,4 @@
-const config = require('../../config.json');
+require("dotenv").config();
 const fs = require('fs');
 const path = require('path');
 const colors = {
@@ -16,7 +16,7 @@ module.exports.createLog = async (message, error, developerMode) => {
         return;
     }
     if (developerMode) {
-        if (config["DeveloperMode"]) {
+        if (process.env.DEVELOPER_MODE) {
             console.log(`${colors.cyan}(DEV) [${new Date().toLocaleString()}] ${message}${colors.reset}`);
         }
         return;
@@ -39,7 +39,7 @@ module.exports.registerLog = async (message, error, developerMode) => {
     }
 
     if (developerMode) {
-        if (config["DeveloperMode"]) {
+        if (process.env.DEVELOPER_MODE) {
             fs.appendFileSync(logFilePath, `(DEV) ${logMessage}`);
         }
         return;
