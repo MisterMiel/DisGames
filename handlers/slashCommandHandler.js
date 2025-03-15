@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const config = require('../config.json');
+require("dotenv").config();
 
 
 async function createSlashCommands(client, functions) {
@@ -20,24 +20,14 @@ async function createSlashCommands(client, functions) {
 
     functions.createLog(`Creating slashCommands`, false, false)
 
-    const rest = new REST().setToken(config["Keys"]["Token"]);
+    const rest = new REST().setToken(process.env.TOKEN);
 
     (async () => {
         try {
             functions.createLog(`Started refreshing ${slashCommands.length} application (/) commands.`, false, true);
 
-            // const data = await rest.put(
-            //     Routes.applicationGuildCommands(config["Keys"]["ClientID"], '1061703062294626334'),
-            //     { body: slashCommands },
-            // );
-
-            // const secondData = await rest.put(
-            //     Routes.applicationGuildCommands(config["Keys"]["ClientID"], '797846882818457600'),
-            //     { body: slashCommands },
-            // )
-
             await rest.put(
-                Routes.applicationCommands(config["Keys"]["ClientID"]),
+                Routes.applicationCommands(process.env.CLIENT_ID),
                 { body: slashCommands },
             );
 

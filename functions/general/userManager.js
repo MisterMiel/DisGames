@@ -1,4 +1,3 @@
-const config = require('../../config.json');
 let users = [];
 
 module.exports.getAllUsers = async (functions, connection) => {

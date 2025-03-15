@@ -1,4 +1,3 @@
-const config = require('../../config.json');
 module.exports = {
     data: {
         name: 'messageDelete',

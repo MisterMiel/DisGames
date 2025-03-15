@@ -1,4 +1,3 @@
-const config = require('../../config.json');
 let servers = [];
 
 module.exports.getAllServers = async (client, functions, connection) => {
