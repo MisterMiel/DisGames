@@ -21,26 +21,32 @@ module.exports.getServer = async (client, functions, connection, id) => {
     }
 
     return 'No servers found.';
-}
+};
 
 module.exports.createServer = async (client, functions, connection, id) => {
-    //TODO: Fix this
     const data = await functions.runQuery(functions, connection, `SELECT * FROM servers WHERE ID = '${id}'`, false);
     if (data.length > 0) {
         return false;
     }
+
     functions.createNewStat(functions, connection, -4, 1);
     functions.createLog("Creating new server", false, true);
-    const insert = await functions.runQuery(functions, connection, "INSERT INTO servers (ID) VALUES ('" + id + "')", false);
+
+    const query = `
+        INSERT INTO servers (ID, Language, points)
+        VALUES ('${id}', 1, 0)
+        ON DUPLICATE KEY UPDATE Language = VALUES(Language), points = VALUES(points)`;
+    await functions.runQuery(functions, connection, query, false);
+
     const server = {
         ID: id,
         Language: 1,
         points: 0
-    }
+    };
     servers.push(server);
 
     return true;
-}
+};
 
 module.exports.getServerLanguage = async (functions, connection, id) => {
     for (let i = 0; i < servers.length; i++) {
@@ -55,23 +61,23 @@ module.exports.getServerLanguage = async (functions, connection, id) => {
         const language = await functions.convertLanguage(data[0].Language);
         return language;
     } else {
-        functions.createServer(null, functions, connection, id)
+        await this.createServer(null, functions, connection, id);
         return 'EN';
     }
-
-}
-
-
+};
 
 module.exports.updateServerLanguage = async (functions, connection, id, language) => {
     const convertedLanguage = await functions.convertLanguage(language, true);
     for (let i = 0; i < servers.length; i++) {
         if (servers[i].ID === id) {
-            servers[i].Language = convertedLanguage
+            servers[i].Language = convertedLanguage;
         }
     }
-    const update = await functions.runQuery(functions, connection, "UPDATE servers SET Language = '" + convertedLanguage + "' WHERE ID = '" + id + "'");
-}
-
+    const query = `
+        UPDATE servers
+        SET Language = '${convertedLanguage}'
+        WHERE ID = '${id}'`;
+    await functions.runQuery(functions, connection, query);
+};
 
 module.exports.servers = servers;
