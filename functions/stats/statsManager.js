@@ -33,6 +33,10 @@ module.exports.updateStats = async (client, functions, connection) => {
         functions.createLog("Updating stats", false, true);
         const date = new Date();
         const formattedDate = date.toISOString().slice(0, 10);
+        const previousDate = new Date(date);
+        previousDate.setDate(previousDate.getDate() - 1);
+        const formattedPreviousDate = previousDate.toISOString().slice(0, 10);
+
         const data = await functions.runQuery(functions, connection, `
             SELECT 'users' as users, COUNT(*) as row_count FROM users
             UNION ALL
@@ -45,7 +49,17 @@ module.exports.updateStats = async (client, functions, connection) => {
             for (let i = 0; i < data.length; i++) {
                 const row = data[i];
                 const gameID = tableMap[row.users] || 0;
-                statsMessage += `${row.users}: ${row.row_count}\n`;
+
+                // Fetch the previous day's value
+                const previousData = await functions.runQuery(functions, connection, `
+                    SELECT value FROM statistics
+                    WHERE gameID = "${gameID}" AND date = "${formattedPreviousDate}"`, false);
+                const previousValue = previousData.length > 0 ? previousData[0].value : 0;
+
+                // Calculate the difference
+                const difference = row.row_count - previousValue;
+
+                statsMessage += `${row.users}: ${row.row_count} (${difference >= 0 ? '+' : ''}${difference})\n`;
 
                 const query = `
                     INSERT INTO statistics (gameID, date, value)
