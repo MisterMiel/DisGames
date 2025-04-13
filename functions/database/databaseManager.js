@@ -10,6 +10,7 @@ module.exports.createConnection = async (functions) => {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
+            port: process.env.DB_PORT,
             authPlugins: {
                 mysql_clear_password: () => () => Buffer.from(process.env.DB_PASSWORD)
             }

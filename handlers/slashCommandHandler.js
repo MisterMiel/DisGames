@@ -5,7 +5,6 @@ require("dotenv").config();
 async function createSlashCommands(client, functions) {
     const slashCommands = [];
 
-
     client.commands.forEach(commands => {
         if (commands.data.name === "disabled") return;
         let commandObject = {
