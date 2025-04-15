@@ -5,6 +5,29 @@ require('dotenv').config();
 
 const logsFolder = path.join(process.cwd(), './logs');
 const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+const COOLIFY_APP_UUID = process.env.COOLIFY_APP_UUID;
+const MONITOR_URL = process.env.MONITOR_URL;
+
+async function callCoolifyMonitor(action, errorMessage = null, errorCode = null) {
+  try {
+    if (!COOLIFY_APP_UUID || !MONITOR_URL) {
+      console.log('Coolify Monitor not configured');
+      return null;
+    }
+    
+    const response = await axios.post(MONITOR_URL, {
+      action,
+      serverId: COOLIFY_APP_UUID,
+      errorMessage,
+      errorCode
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error calling Coolify Monitor:', error.message);
+    return null;
+  }
+}
 
 process.on('uncaughtException', async (err) => {
     let currentTime = new Date();
@@ -31,4 +54,6 @@ process.on('uncaughtException', async (err) => {
     } else {
         console.error('Discord webhook URL not found in environment variables');
     }
+    
+    await callCoolifyMonitor('REPORT_ERROR', err.message, err.name);
 });
