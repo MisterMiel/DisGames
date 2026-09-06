@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import mysql from 'mysql2/promise';
 import { URL } from 'url';
-import { createConnectionAsync, closeConnectionAsync } from './repositories/util/ConnectionHandler';
+import { createConnectionAsync, closeConnectionAsync, runQueryAsync } from './repositories/util/ConnectionHandler';
 import { syncRoutines } from './utils/routines/Sync';
 import { syncEnumTablesAsync } from './utils/database/SyncEnumTables';
 import Logger from './utils/application/Logger';
@@ -11,15 +11,12 @@ import { getConfig, getConfigValue } from './utils/application/Config';
 import { EnvConfigEnum } from './interfaces/enums/application/EnvConfigEnum';
 import TestMode from './utils/application/TestMode';
 
-// Bootstrapping a DB is only ever done for a test database (CI or local), where
-// just the test-mode-required env vars are set — not the full production schema.
 TestMode.enable();
 getConfig();
 
 const schemaFilePath = path.join(__dirname, 'db', 'schema', 'schema.sql');
+const seedDataFilePath = path.join(__dirname, 'db', 'schema', 'seed-data.sql');
 
-// Runs ahead of ConnectionHandler's pool: createConnectionAsync() queries `table_enum`
-// as soon as it connects, so the database + schema must already exist by then.
 async function createDatabaseAndApplySchemaAsync(): Promise<void> {
     const dbUrl = getConfigValue(EnvConfigEnum.DATABASE_URL) as string;
     const url = new URL(dbUrl);
@@ -45,12 +42,22 @@ async function createDatabaseAndApplySchemaAsync(): Promise<void> {
     }
 }
 
+async function applySeedDataAsync(): Promise<void> {
+    if (!fs.existsSync(seedDataFilePath))
+        return;
+
+    const seedSql = fs.readFileSync(seedDataFilePath, 'utf-8');
+    await runQueryAsync(seedSql);
+    Logger.logInfo(`Applied seed data from ${seedDataFilePath}`);
+}
+
 async function runAsync(): Promise<void> {
     try {
         await createDatabaseAndApplySchemaAsync();
         await createConnectionAsync();
         await syncRoutines();
         await syncEnumTablesAsync();
+        await applySeedDataAsync();
         Logger.logInfo('Database bootstrap complete');
     } catch (err) {
         Logger.logError(`Error bootstrapping database: ${err}`);
