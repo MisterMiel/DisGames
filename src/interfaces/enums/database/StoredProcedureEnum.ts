@@ -5,6 +5,7 @@ export enum StoredProcedureEnum {
   BarChartEventsEventsPerHour = "BarChart_Events_EventsPerHour",
   CleanUpData = "CleanUpData",
   CleanUpMetrics = "CleanUpMetrics",
+  GetGameDataSeedSample = "GetGameDataSeedSample",
   GetRandomGameData = "GetRandomGameData",
   GetServersWithLeaderboardLive = "GetServersWithLeaderboardLive",
   GetTopServersByPoints = "GetTopServersByPoints",

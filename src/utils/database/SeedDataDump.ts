@@ -1,15 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import mysql from 'mysql2/promise';
-import { runQueryAsync, getTableName } from '../../repositories/util/ConnectionHandler';
+import { runQueryAsync, runExecuteAsync, getTableName } from '../../repositories/util/ConnectionHandler';
 import { TableEnum } from '../../interfaces/enums/database/TableEnum';
+import { StoredProcedureEnum } from '../../interfaces/enums/database/StoredProcedureEnum';
 import Logger from '../application/Logger';
 
 const seedOutputPath = path.join(__dirname, '..', '..', 'db', 'schema', 'seed-data.sql');
 
 // Order matters for seed tables
 const SEED_TABLES = [TableEnum.DATASHEETS, TableEnum.GAME_DATA];
-const GAME_DATA_ROWS_PER_GAME = 2;
+
+// game_data holds the bot's real content (1300+ rows) — tests only need enough per
+// GameId for GetRandomGameData to return something. The sampling itself (including the
+// Connections-needs-4-rows special case) lives in GetGameDataSeedSample, alongside the
+// other stored routines, rather than as raw SQL in this script.
+const GAME_DATA_DEFAULT_ROWS_PER_GAME = 2;
 
 function formatInsert(tableName: string, columns: string[], rows: Record<string, unknown>[]): string {
     const values = rows
@@ -21,15 +27,11 @@ function formatInsert(tableName: string, columns: string[], rows: Record<string,
 
 async function fetchSeedRows(tableEnum: TableEnum, tableName: string): Promise<Record<string, unknown>[]> {
     if (tableEnum === TableEnum.GAME_DATA) {
-        return await runQueryAsync(`
-            SELECT gd.* FROM (
-                SELECT *, ROW_NUMBER() OVER (
-                    PARTITION BY GameId ORDER BY (DataSheetId IS NULL) DESC, Id ASC
-                ) AS rn
-                FROM \`${tableName}\`
-            ) AS gd
-            WHERE gd.rn <= ?
-        `, [GAME_DATA_ROWS_PER_GAME]) as Record<string, unknown>[];
+        const results = await runExecuteAsync(
+            `CALL \`${StoredProcedureEnum.GetGameDataSeedSample}\`(?)`,
+            [GAME_DATA_DEFAULT_ROWS_PER_GAME]
+        );
+        return (results?.[0] ?? []) as Record<string, unknown>[];
     }
 
     return await runQueryAsync(`SELECT * FROM \`${tableName}\``) as Record<string, unknown>[];
@@ -44,7 +46,7 @@ export async function dumpSeedDataAsync(): Promise<void> {
         if (rows.length === 0)
             continue;
 
-        const columns = Object.keys(rows[0]).filter(col => col !== 'rn');
+        const columns = Object.keys(rows[0]);
         statements.push(formatInsert(tableName, columns, rows), '');
     }
 

@@ -69,6 +69,9 @@ export class GameService extends Service {
 
                     if (gameModule && gameModule.config && gameModule.functions) {
                         await this.completeGameConfigAsync(gameModule.config);
+
+                        if (gameModule.config.disabled)
+                            continue;
                         this.games.push(gameModule);
                     }
                 } catch (error) {
