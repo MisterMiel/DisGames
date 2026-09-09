@@ -19,9 +19,9 @@ BEGIN
     (
         SELECT
             gt.Id,
-            gt.gameName,
+            gt.Name AS gameName,
             COALESCE(gc.cnt, 0) AS cnt
-        FROM game_types gt
+        FROM game_type_enum gt
         LEFT JOIN
             (
                 SELECT

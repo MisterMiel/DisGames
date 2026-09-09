@@ -3,6 +3,7 @@ import { ComponentErrorOptions } from "../../interfaces/application/Error";
 import { ExceptionTranslationParams } from "../../interfaces/application/i18n";
 import { Component } from "../../interfaces/application/Message";
 import { ExceptionEnum } from "../../interfaces/enums";
+import { MetricEnum } from "../../interfaces/enums/application/MetricEnum";
 import ComponentService from "../../services/application/ComponentService";
 import { i18n } from "../../utils/i18n/i18n";
 import { createMultiLingualString, MultiLingualString } from "../../utils/i18n/MultiLingualString";
@@ -102,7 +103,13 @@ function isTransientNetworkError(error: unknown): boolean {
     return e.name === 'ConnectTimeoutError' || e.code === 'UND_ERR_CONNECT_TIMEOUT';
 }
 
+// Imported lazily to avoid a require cycle: MetricService pulls in BaseDomainService, which imports ErrorHelper from this file.
+type MetricServiceLike = { incrementAsync(metric: MetricEnum, amount?: number): Promise<void> };
+
 export async function handleErrorAsync(error: unknown, event: InteractionEvent): Promise<void> {
+    const metricService = (await import("../../services/domain/MetricService.js")).default as unknown as MetricServiceLike;
+    await metricService.incrementAsync(MetricEnum.ErrorRate);
+
     if (error instanceof ComponentError) {
         if (error.hasComponents()) {
             const errorMessage = createMultiLingualString(error.getMessage());
