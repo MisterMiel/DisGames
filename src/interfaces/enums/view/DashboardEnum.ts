@@ -6,4 +6,6 @@ export enum DashboardEnum {
     GAMES = "games",
     PERFORMANCE = "performance",
     METRICS = "metrics",
+    PREMIUM = "premium",
+    DISCORD = "discord",
 }
