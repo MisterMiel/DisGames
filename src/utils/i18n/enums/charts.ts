@@ -32,4 +32,12 @@ export const chartTranslations: LanguageEnumTranslations<ChartTypeEnum> = {
         [LanguageEnum.EN]: "Games by Type",
         [LanguageEnum.NL]: "Games by Type",
     },
+    [ChartTypeEnum.LineChart_Discord_GuildServerGrowth]: {
+        [LanguageEnum.EN]: "Guild & Server Growth",
+        [LanguageEnum.NL]: "Guild & Server Growth",
+    },
+    [ChartTypeEnum.LineChart_Discord_MemberUserGrowth]: {
+        [LanguageEnum.EN]: "Member & User Growth",
+        [LanguageEnum.NL]: "Member & User Growth",
+    },
 };

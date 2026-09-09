@@ -6,6 +6,8 @@ export enum ChartTypeEnum {
     BarChart_Events_EventsPerHour = "BarChart_Events_EventsPerHour",
     PieChart_Server_LanguageDistribution = "PieChart_Server_LanguageDistribution",
     PieChart_Games_GamesByType = "PieChart_Games_GamesByType",
+    LineChart_Discord_GuildServerGrowth = "LineChart_Discord_GuildServerGrowth",
+    LineChart_Discord_MemberUserGrowth = "LineChart_Discord_MemberUserGrowth",
 }
 
 export enum ChartEnum {

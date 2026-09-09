@@ -49,6 +49,10 @@ class ServerRepository implements RepositoryWithBase<ServersModel, ServersSaveMo
         return await this.baseRepository.Select().Sum("MemberCount");
     }
 
+    async getPremiumCountAsync(): Promise<number> {
+        return await this.baseRepository.Select().Where({ IsPremium: true }).Count();
+    }
+
     async getServersWithLeaderboardLiveAsync(): Promise<ServersModel[]> {
         return this.baseRepository.CallStoredProcedure(StoredProcedureEnum.GetServersWithLeaderboardLive);
     }

@@ -38,6 +38,7 @@ import DataSheetService from "./DataSheetService";
 import { addPrefix, createFooter, createTitle } from "../../utils/helpers/Markdown";
 import { InteractionService } from "../application/InteractionService";
 import { RegisterMetricPulls, TrackMetricPull } from "../../utils/helpers/Decorator";
+import MetricService from "./MetricService";
 import UserService from "./UserService";
 import BadgeService from "./BadgeService";
 import { isPremiumEnabled, isServerPremium } from "../../utils/application/PremiumAccess";
@@ -280,6 +281,7 @@ export class GameService extends Service {
 
         const handleReplaceAsync = async (existingGame: GamesModel, event: ButtonInteractionEvent) => {
             await GameRepository.purgeAsync(existingGame.Id);
+            await MetricService.incrementAsync(MetricEnum.GamesEnded);
             await this.saveAsync(savable, event);
             await event.editAsync();
         };
@@ -323,6 +325,7 @@ export class GameService extends Service {
             savable.Answer = "temp";
 
         const model = await GameRepository.saveAsync(savable);
+        await MetricService.incrementAsync(MetricEnum.GamesPlayed);
 
         if (!gameModule.config.firstAnswer) {
             gameData = await GameDataRepository.getRandomDataByGameIdAsync(model.Id!);
@@ -355,6 +358,7 @@ export class GameService extends Service {
 
     public async deleteAsync(id: number): Promise<void> {
         await GameRepository.purgeAsync(id);
+        await MetricService.incrementAsync(MetricEnum.GamesEnded);
     }
 
     // #region Handle Game

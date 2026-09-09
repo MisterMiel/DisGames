@@ -6,9 +6,12 @@ import { isSelectMenuEmpty } from "../helpers/SelectMenu";
 import ComponentService from "../../services/application/ComponentService";
 import { withEventContextAsync } from "../../middleware/EventContext";
 import { i18n } from "../i18n/i18n";
+import MetricService from "../../services/domain/MetricService";
+import { MetricEnum } from "../../interfaces/enums/application/MetricEnum";
 
 export async function handleCommandAsync(command: Command, event: InteractionEvent): Promise<void> {
     await withEventContextAsync(event, async () => {
+        await MetricService.incrementAsync(MetricEnum.CommandsUsed);
         if (command.permissions && !event.user.hasPermissions(command.permissions))
             return await event.replyAsync(new MultiLingualString(i18n.labels.common.notEnoughPermissions));
         await command.executeAsync(event);
