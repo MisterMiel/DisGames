@@ -13,6 +13,7 @@ import { createBlock } from "../../utils/helpers/Markdown";
 export default {
     config: {
         id: GameTypeEnum.GUESS_THE_COUNTRY,
+        disabled: true,
         emoji: "🌍",
         name: new MultiLingualString(i18n.enums.gameTypes[GameTypeEnum.GUESS_THE_COUNTRY].name),
         description: new MultiLingualString(i18n.enums.gameTypes[GameTypeEnum.GUESS_THE_COUNTRY].description),

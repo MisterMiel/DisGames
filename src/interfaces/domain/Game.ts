@@ -35,6 +35,7 @@ export interface IGameEvent {
 // Game configuration interface
 export interface GameConfig {
     id: GameTypeEnum;
+    disabled?: boolean;
     emoji: string;
     name: MultiLingualString;
     description: MultiLingualString;

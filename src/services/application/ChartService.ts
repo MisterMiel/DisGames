@@ -28,6 +28,10 @@ export class ChartService extends Service {
                 return this.getPieChartServerLanguageDistributionAsync(identity);
             case ChartTypeEnum.PieChart_Games_GamesByType:
                 return this.getPieChartGamesGamesByTypeAsync(identity);
+            case ChartTypeEnum.LineChart_Discord_GuildServerGrowth:
+                return this.getLineChartDiscordGuildServerGrowthAsync(identity);
+            case ChartTypeEnum.LineChart_Discord_MemberUserGrowth:
+                return this.getLineChartDiscordMemberUserGrowthAsync(identity);
             default:
                 assertNever(chartEnum, ChartTypeEnum);
         }
@@ -101,6 +105,26 @@ export class ChartService extends Service {
         return {
             title: new MultiLingualString(i18n.enums.charts[ChartTypeEnum.PieChart_Games_GamesByType]).getMessage(),
             type: ChartEnum.Pie,
+            ...chartData,
+        };
+    }
+
+    private async getLineChartDiscordGuildServerGrowthAsync(identity: User): Promise<ChartDefinition> {
+        const chartData = await this.getChartData(StoredProcedureEnum.LineChartDiscordGuildServerGrowth, [30]);
+
+        return {
+            title: new MultiLingualString(i18n.enums.charts[ChartTypeEnum.LineChart_Discord_GuildServerGrowth]).getMessage(),
+            type: ChartEnum.Line,
+            ...chartData,
+        };
+    }
+
+    private async getLineChartDiscordMemberUserGrowthAsync(identity: User): Promise<ChartDefinition> {
+        const chartData = await this.getChartData(StoredProcedureEnum.LineChartDiscordMemberUserGrowth, [30]);
+
+        return {
+            title: new MultiLingualString(i18n.enums.charts[ChartTypeEnum.LineChart_Discord_MemberUserGrowth]).getMessage(),
+            type: ChartEnum.Line,
             ...chartData,
         };
     }

@@ -10,6 +10,7 @@ import { BaseDomainService } from "./BaseDomainService";
 import TimelineBuilder from "./TimelineBuilder";
 import Logger from "../../utils/application/Logger";
 import { registerService } from "../../utils/container/Container";
+import MetricService from "./MetricService";
 
 export class ServerService extends BaseDomainService<ServersModel, ServersSaveModel, typeof ServerRepository> {
     protected readonly repository = ServerRepository;
@@ -50,6 +51,8 @@ export class ServerService extends BaseDomainService<ServersModel, ServersSaveMo
         }
         if (server.IsPremium === isPremium)
             return null;
+
+        await MetricService.incrementAsync(isPremium ? MetricEnum.PremiumConversions : MetricEnum.PremiumChurn);
 
         return await this.repository.saveAsync(new ServersSaveModel({
             Id: server.Id,

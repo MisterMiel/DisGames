@@ -325,21 +325,21 @@ export class GameDataSaveModel extends BaseEntityClass<GameDataModelFieldEnum> i
   }
 }
 
-export interface GameTypesModel {
+export interface GameTypeEnumModel {
   Id: number;
-  gameName: string;
+  Name: string;
 }
 
-export enum GameTypesModelFieldEnum {
+export enum GameTypeEnumModelFieldEnum {
   Id = "Id",
-  gameName = "gameName"
+  Name = "Name"
 }
 
-export function getGameTypesFieldType(field: GameTypesModelFieldEnum): BaseEntityFieldType {
+export function getGameTypeEnumFieldType(field: GameTypeEnumModelFieldEnum): BaseEntityFieldType {
   switch (field) {
-    case GameTypesModelFieldEnum.Id:
+    case GameTypeEnumModelFieldEnum.Id:
       return BaseEntityFieldType.Number;
-    case GameTypesModelFieldEnum.gameName:
+    case GameTypeEnumModelFieldEnum.Name:
       return BaseEntityFieldType.String;
   }
 }
@@ -446,6 +446,25 @@ export class GamesSaveModel extends BaseEntityClass<GamesModelFieldEnum> impleme
     if (data.LastUser !== undefined) this.LastUser = data.LastUser;
     if (data.MessageId !== undefined) this.MessageId = data.MessageId;
     if (data.SettingsJSON !== undefined) this.SettingsJSON = data.SettingsJSON;
+  }
+}
+
+export interface LanguageEnumModel {
+  Id: number;
+  Name: string;
+}
+
+export enum LanguageEnumModelFieldEnum {
+  Id = "Id",
+  Name = "Name"
+}
+
+export function getLanguageEnumFieldType(field: LanguageEnumModelFieldEnum): BaseEntityFieldType {
+  switch (field) {
+    case LanguageEnumModelFieldEnum.Id:
+      return BaseEntityFieldType.Number;
+    case LanguageEnumModelFieldEnum.Name:
+      return BaseEntityFieldType.String;
   }
 }
 
@@ -717,21 +736,21 @@ export function getStatisticsFieldType(field: StatisticsModelFieldEnum): BaseEnt
   }
 }
 
-export interface TableEnumsModel {
+export interface TableEnumModel {
   Id: number;
-  TableName: string;
+  Name: string;
 }
 
-export enum TableEnumsModelFieldEnum {
+export enum TableEnumModelFieldEnum {
   Id = "Id",
-  TableName = "TableName"
+  Name = "Name"
 }
 
-export function getTableEnumsFieldType(field: TableEnumsModelFieldEnum): BaseEntityFieldType {
+export function getTableEnumFieldType(field: TableEnumModelFieldEnum): BaseEntityFieldType {
   switch (field) {
-    case TableEnumsModelFieldEnum.Id:
+    case TableEnumModelFieldEnum.Id:
       return BaseEntityFieldType.Number;
-    case TableEnumsModelFieldEnum.TableName:
+    case TableEnumModelFieldEnum.Name:
       return BaseEntityFieldType.String;
   }
 }

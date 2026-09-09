@@ -12,6 +12,9 @@ import { EventTypeEnum, isMessageEventType } from '../interfaces/enums';
 import { EventsSaveModel } from '../interfaces/database';
 import { withEventContextAsync } from '../middleware/EventContext';
 import { isStandby } from '../utils/application/HandoffManager';
+import { getCommandConfigByEnum } from '../utils/collectors/CommandCollector';
+import { CommandEnum } from '../interfaces/enums/commands/CommandEnum';
+import { impersonateSlashCommandAsync } from '../services/discord/DiscordCommandImpersonatorService';
 
 export default {
     name: Events.MessageCreate,
@@ -61,6 +64,14 @@ export async function processMessageEventAsync(event: InteractionEvent): Promise
                     }), event);
 
                     await GameService.handleGameAsync(event);
+                }
+
+                if (event.mentionedBot) {
+                    await impersonateSlashCommandAsync(
+                        event,
+                        event.user.userId,
+                        CommandEnum.ABOUTME,
+                    );
                 }
             }
         }

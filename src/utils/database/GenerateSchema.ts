@@ -2,6 +2,8 @@ import { createConnectionAsync, closeConnectionAsync } from '../../repositories/
 import { TableInterfaceGenerator } from './TableInterfaceGenerator';
 import { StoredProcedureGenerator } from './StoredProcedureGenerator';
 import { exportRoutines } from '../routines/Sync';
+import { dumpSchemaAsync } from './SchemaDump';
+import { dumpSeedDataAsync } from './SeedDataDump';
 import Logger from '../application/Logger';
 import { getConfig } from '../application/Config';
 
@@ -37,6 +39,9 @@ export async function createSchemaAsync() {
         );
         
         await exportRoutines();
+
+        await dumpSchemaAsync();
+        await dumpSeedDataAsync();
     } catch (err) {
         Logger.logError(`Error generating schema: ${err}`);
     } finally {

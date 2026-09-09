@@ -37,9 +37,13 @@ export class DashboardService extends Service {
             case DashboardEnum.GAMES:
                 return this.getGamesDashboardAsync(identity);
             case DashboardEnum.PERFORMANCE:
-                return this.getCachePerformanceDashboardAsync();
+                return await this.getCachePerformanceDashboardAsync();
             case DashboardEnum.METRICS:
                 return this.getMetricsDashboardAsync();
+            case DashboardEnum.PREMIUM:
+                return this.getPremiumDashboardAsync();
+            case DashboardEnum.DISCORD:
+                return this.getDiscordDashboardAsync(identity);
             default:
                 assertNever(dashboardEnum, DashboardEnum)
         }
@@ -102,13 +106,19 @@ export class DashboardService extends Service {
     }
 
     private async getHomeDashboardAsync(identity: User): Promise<DashboardResponse> {
+        const timeFrame = calculateDuration(7, DurationEnum.DAY);
+        const serversTimeFrame = await TimelineRepository.getServersTimeFrameAsync(timeFrame);
+
         return {
             title: "Home",
             cards: [
-                this.createDashboardCard("Total Revenue", "$1,250.00", "up", { primaryText: "Trending up this month", secondaryText: "Visitors for the last 6 months" }),
-                this.createDashboardCard("New Customers", 1234, "down", { primaryText: "Down 20% this period", secondaryText: "Acquisition needs attention" }),
-                this.createDashboardCard("Active Accounts", 45678, "up", { primaryText: "Strong user retention", secondaryText: "Engagement exceed targets" }),
-                this.createDashboardCard("Growth Rate", "4.5%", "up", { primaryText: "Steady performance", secondaryText: "Meets growth projections" })
+                await this.createDashboardCardByMetricAsync(MetricEnum.Servers),
+                await this.createDashboardCardByMetricAsync(MetricEnum.Users),
+                await this.createDashboardCardByMetricAsync(MetricEnum.ActiveGames),
+                this.createDashboardCardWithTimeframe(
+                    "New Servers",
+                    serversTimeFrame
+                )
             ]
         }
     }
@@ -192,7 +202,7 @@ export class DashboardService extends Service {
         };
     }
 
-    private getCachePerformanceDashboardAsync(): DashboardResponse {
+    private async getCachePerformanceDashboardAsync(): Promise<DashboardResponse> {
         const stats = CacheRegistry.getAggregateStats();
         const footer = {
             primaryText: `${stats.hits.toLocaleString()} hits / ${stats.totalRequests.toLocaleString()} requests`,
@@ -216,7 +226,9 @@ export class DashboardService extends Service {
                         primaryText: `${stats.hits.toLocaleString()} hits`,
                         secondaryText: `${stats.misses.toLocaleString()} misses`
                     }
-                )
+                ),
+                await this.createDashboardCardByMetricAsync(MetricEnum.CommandsUsed),
+                await this.createDashboardCardByMetricAsync(MetricEnum.ErrorRate)
             ]
         };
     }
@@ -297,9 +309,58 @@ export class DashboardService extends Service {
                 this.createDashboardCardWithTimeframe(
                     "Games Played",
                     gamesPlayedTimeFrame
-                )
+                ),
+                await this.createDashboardCardByMetricAsync(MetricEnum.GamesPlayed),
+                await this.createDashboardCardByMetricAsync(MetricEnum.GamesEnded)
             ],
             charts: [barChartGamesByType]
+        };
+    }
+
+    private async getPremiumDashboardAsync(): Promise<DashboardResponse> {
+        const servers = await ServerRepository.getAllAsync();
+        const premiumCount = await ServerRepository.getPremiumCountAsync();
+        const premiumRate = servers.length > 0 ? Math.round((premiumCount / servers.length) * 1000) / 10 : 0;
+
+        return {
+            title: "Premium",
+            cards: [
+                this.createDashboardCard(
+                    "Premium Servers",
+                    premiumCount,
+                    undefined,
+                    {
+                        primaryText: `${premiumCount.toLocaleString()} of ${servers.length.toLocaleString()} servers`,
+                        secondaryText: "Currently on the Pro tier"
+                    }
+                ),
+                this.createDashboardCard(
+                    "Premium Rate",
+                    `${premiumRate}%`,
+                    undefined,
+                    {
+                        primaryText: "Share of servers on Pro",
+                        secondaryText: "Premium servers divided by total servers"
+                    }
+                ),
+                await this.createDashboardCardByMetricAsync(MetricEnum.PremiumConversions),
+                await this.createDashboardCardByMetricAsync(MetricEnum.PremiumChurn)
+            ]
+        };
+    }
+
+    private async getDiscordDashboardAsync(identity: User): Promise<DashboardResponse> {
+        const guildServerChart = await ChartService.getChartAsync(ChartTypeEnum.LineChart_Discord_GuildServerGrowth, identity);
+        const memberUserChart = await ChartService.getChartAsync(ChartTypeEnum.LineChart_Discord_MemberUserGrowth, identity);
+
+        return {
+            title: "Discord",
+            cards: [
+                await this.createDashboardCardByMetricAsync(MetricEnum.Guilds),
+                await this.createDashboardCardByMetricAsync(MetricEnum.Members),
+                await this.createDashboardCardByMetricAsync(MetricEnum.Events)
+            ],
+            charts: [guildServerChart, memberUserChart]
         };
     }
 }

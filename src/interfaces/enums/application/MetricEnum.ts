@@ -9,4 +9,10 @@ export enum MetricEnum {
     ServerMembers = 8,
     AdoptionRate = 9,
     InactivityRate = 10,
+    GamesPlayed = 11,
+    GamesEnded = 12,
+    CommandsUsed = 13,
+    PremiumConversions = 14,
+    PremiumChurn = 15,
+    ErrorRate = 16,
 }
