@@ -14,6 +14,7 @@ import { withEventContextAsync } from '../middleware/EventContext';
 import { isStandby } from '../utils/application/HandoffManager';
 import { getCommandConfigByEnum } from '../utils/collectors/CommandCollector';
 import { CommandEnum } from '../interfaces/enums/commands/CommandEnum';
+import { impersonateSlashCommandAsync } from '../services/discord/DiscordCommandImpersonatorService';
 
 export default {
     name: Events.MessageCreate,
@@ -66,9 +67,11 @@ export async function processMessageEventAsync(event: InteractionEvent): Promise
                 }
 
                 if (event.mentionedBot) {
-                    const aboutMeCommand = getCommandConfigByEnum(CommandEnum.ABOUTME);
-                    if (aboutMeCommand && (aboutMeCommand.canExecute?.(event) ?? true))
-                        await handleCommandAsync(aboutMeCommand, event);
+                    await impersonateSlashCommandAsync(
+                        event,
+                        event.user.userId,
+                        CommandEnum.ABOUTME,
+                    );
                 }
             }
         }
