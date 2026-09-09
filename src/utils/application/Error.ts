@@ -102,12 +102,10 @@ function isTransientNetworkError(error: unknown): boolean {
     const e = error as { name?: string; code?: string };
     return e.name === 'ConnectTimeoutError' || e.code === 'UND_ERR_CONNECT_TIMEOUT';
 }
-
-// Imported lazily to avoid a require cycle: MetricService pulls in BaseDomainService, which imports ErrorHelper from this file.
 type MetricServiceLike = { incrementAsync(metric: MetricEnum, amount?: number): Promise<void> };
 
 export async function handleErrorAsync(error: unknown, event: InteractionEvent): Promise<void> {
-    const metricService = (await import("../../services/domain/MetricService.js")).default as unknown as MetricServiceLike;
+    const metricService = (require("../../services/domain/MetricService") as { default: MetricServiceLike }).default;
     await metricService.incrementAsync(MetricEnum.ErrorRate);
 
     if (error instanceof ComponentError) {

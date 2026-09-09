@@ -5,7 +5,7 @@ import { DashboardSectionCardData, DashboardResponse, TimeframeData, TrendDirect
 import EventRepository from "../../repositories/EventRepository";
 import TimelineRepository from "../../repositories/TimelineRepository";
 import { calculateDuration, humanizeDuration } from "../../utils/helpers/Duration";
-import { assertNever, ErrorHelper } from "../../utils/application/Error";
+import { assertNever } from "../../utils/application/Error";
 import { ChartTypeEnum } from "../../interfaces/enums/application/ChartTypeEnum";
 import ChartService from "./ChartService";
 import ServerRepository from "../../repositories/ServerRepository";
@@ -15,7 +15,7 @@ import GameRepository from "../../repositories/GameRepository";
 import { GameTypeEnum } from "../../interfaces/enums/database/GameTypeEnum";
 import { LanguageEnum } from "../../interfaces/enums/database/LanguageEnum";
 import { i18n } from "../../utils/i18n/i18n";
-import { ExceptionEnum, MetricEnum } from "../../interfaces/enums";
+import { MetricEnum } from "../../interfaces/enums";
 import MetricService from "../domain/MetricService";
 import { humanizeDateFromNow } from "../../utils/helpers/Date";
 import { Service } from "../../interfaces/application/Service";
@@ -88,19 +88,17 @@ export class DashboardService extends Service {
 
     private async createDashboardCardByMetricAsync(metric: MetricEnum): Promise<DashboardSectionCardData> {
         const model = await MetricService.getLatestByMetricAsync(metric);
-        if (!model)
-            ErrorHelper.throw(ExceptionEnum.RECORD_NOT_FOUND);
 
         return {
             id: metric.toString().toLowerCase(),
             metricEnum: metric,
             title: i18n.enums.metrics[metric][LanguageEnum.EN],
             description: i18n.enums.metrics[metric][LanguageEnum.EN],
-            value: model.Value,
+            value: model?.Value ?? 0,
             trend: undefined,
             footer: {
                 primaryText: i18n.enums.metrics[metric][LanguageEnum.EN],
-                secondaryText: `Recorded ${humanizeDateFromNow(model.Datetime)}`
+                secondaryText: model ? `Recorded ${humanizeDateFromNow(model.Datetime)}` : "No data recorded yet"
             }
         }
     }
